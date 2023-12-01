@@ -14,7 +14,8 @@ setup(
         'Flask',
         'flask_bcrypt',
         'flask_login',
-        'flask_sqlalchemy'
+        'flask_sqlalchemy',
+        'flask_wtf'
     ],
     entry_points={
         'console_scripts': [
