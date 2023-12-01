@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}Öğrenci Kayıt Formu{% endblock %}
+
+{% block content %}
+    <h2>Öğrenci Kayıt Formu</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        {{ form.hidden_tag() }}
+
+        <div>
+            {{ form.username.label(for="username") }}
+            {{ form.username(placeholder="Kullanıcı Adı", class="form-control", id="username") }}
+            {% for error in form.username.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.student_number.label(for="student_number") }}
+            {{ form.student_number(placeholder="Öğrenci Numarası", class="form-control", id="student_number") }}
+            {% for error in form.student_number.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.password.label(for="password") }}
+            {{ form.password(placeholder="Şifre", class="form-control", id="password") }}
+            {% for error in form.password.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.confirm_password.label(for="confirm_password") }}
+            {{ form.confirm_password(placeholder="Şifreyi Onayla", class="form-control", id="confirm_password") }}
+            {% for error in form.confirm_password.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+{% endblock %}

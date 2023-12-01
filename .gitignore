@@ -1,0 +1,5 @@
+static/projects/*
+*.db
+.idea
+venv/
+.env
