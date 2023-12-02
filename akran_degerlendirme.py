@@ -67,6 +67,13 @@ def rate_project(project_id):
     return jsonify({'success': True})
 
 
+@app.route('/project_ratings')
+def project_ratings():
+    # Tüm projeleri ve puanları al
+    projects = Project.query.all()
+
+    return render_template('project_ratings.html', projects=projects)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}Proje Puanları{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>Proje Puanları</h2>
+
+        <table class="table-fill">
+            <thead>
+            <tr>
+                <th>Proje Adı</th>
+                <th>Ortalama Puan</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.owner_name }}</td>
+                    <td>{{ project.average_rating }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
