@@ -28,7 +28,7 @@ def home():
     if current_user.is_authenticated:
 
         # Öğrencinin verdiği puanları ve projeleri al
-        student_ratings = ProjectRating.query.filter_by(student_id=current_user.id).all()
+        student_ratings = ProjectRating.query.filter_by(student_id=current_user.id).order_by(Project.average_rating.desc()).all()
 
         # Projeleri al
         projects = Project.query.all()
