@@ -65,7 +65,7 @@
         function showPreviousProject() {
             document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
 
-            currentProjectIndex = (currentProjectIndex - 1) % projects.length;
+            currentProjectIndex = (currentProjectIndex - 1+ projects.length) % projects.length;
 
             document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'block';
         }
