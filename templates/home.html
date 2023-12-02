@@ -29,16 +29,18 @@
 
                 <form class="rating-form" id="{{ project.id }}_form" data-project-id="{{ project.id }}">
                     <div class="range-slider">
-                        <input id="{{ project.id }}_rating" class="range-slider__range" type="range" value="0" min="0" max="10">
+                        <input id="{{ project.id }}_rating" class="range-slider__range" type="range"
+                               value="{{ project_ratings.get(project.id,0) }}" min="0" max="10">
                         <span class="range-slider__value">0</span>
                     </div>
 
-                    <button class="button -blue center" type="button" onclick="rateProject('{{ project.id }}')">Puan Ver</button>
+                    <button class="button -blue center" type="button" onclick="rateProject('{{ project.id }}')">Puan
+                        Ver
+                    </button>
                 </form>
             </div>
         {% endfor %}
         <button class="button -green center" onclick="showNextProject()">Sonraki Proje</button>
-
 
     {% else %}
         <h2>Ana Sayfa</h2>

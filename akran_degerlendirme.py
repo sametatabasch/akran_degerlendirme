@@ -26,7 +26,19 @@ with app.app_context():
 @app.route('/')
 def home():
     if current_user.is_authenticated:
+
+        # Öğrencinin verdiği puanları ve projeleri al
+        student_ratings = ProjectRating.query.filter_by(student_id=current_user.id).all()
+
+        # Projeleri al
         projects = Project.query.all()
+
+        # Projelerle ilişkilendirilmiş puanları içeren bir sözlük oluştur
+        project_ratings = {rating.project_id: rating.rating for rating in student_ratings}
+
+        # Projeleri ve öğrencinin verdiği puanları template'e geçir
+        return render_template('home.html', projects=projects, project_ratings=project_ratings)
+
         return render_template('home.html', projects=projects)
     else:
         return redirect(url_for('login'))
