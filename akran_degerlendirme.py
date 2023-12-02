@@ -31,7 +31,7 @@ def home():
         student_ratings = ProjectRating.query.filter_by(student_id=current_user.id).all()
 
         # Projeleri al
-        projects = Project.query.order_by(Project.average_rating.desc()).all()
+        projects = Project.query.all()
 
         # Projelerle ilişkilendirilmiş puanları içeren bir sözlük oluştur
         project_ratings = {rating.project_id: rating.rating for rating in student_ratings}
@@ -70,7 +70,7 @@ def rate_project(project_id):
 @app.route('/project_ratings')
 def project_ratings():
     # Tüm projeleri ve puanları al
-    projects = Project.query.all()
+    projects = Project.query.order_by(Project.average_rating.desc()).all()
 
     return render_template('project_ratings.html', projects=projects)
 
