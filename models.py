@@ -20,9 +20,10 @@ class Project(db.Model):
     ratings = db.relationship('ProjectRating', backref='project', lazy=True)
 
     def update_average_rating(self):
+        # todo fonksiyon adını değiş
         if self.ratings:
             total_ratings = sum([rating.rating for rating in self.ratings])
-            self.average_rating = total_ratings / len(self.ratings)
+            self.average_rating = total_ratings
         else:
             self.average_rating = 0.0
 
