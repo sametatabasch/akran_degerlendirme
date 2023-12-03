@@ -14,6 +14,7 @@
                          src="{{ url_for('static', filename='projects/' + project.owner_name + '/' + project.images[0].filename) }}"
                          alt="Project Image"
                          onclick="toggleAnswerImage('{{ project.id }}')"
+                         loading="lazy"
                     />
                 </figure>
                 <figure id="{{ project.id }}_figure_answer" style="display: none">
@@ -22,6 +23,7 @@
                          src="{{ url_for('static', filename='projects/' + project.owner_name + '/' + project.images[1].filename) }}"
                          alt="Project Answer Image"
                          onclick="toggleAnswerImage('{{ project.id }}')"
+                         loading="lazy"
                     />
                 </figure>
 
