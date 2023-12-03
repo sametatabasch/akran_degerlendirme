@@ -6,7 +6,7 @@
     <div>
         <h2>Proje Puanları</h2>
 
-        <table class="table-fill">
+        <table id="ratings">
             <thead>
             <tr>
                 <th>Proje Adı</th>
@@ -23,4 +23,7 @@
             </tbody>
         </table>
     </div>
+    <script>
+        let table = new DataTable('#ratings');
+    </script>
 {% endblock %}

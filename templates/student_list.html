@@ -6,7 +6,7 @@
     <div>
         <h2>Öğrenci Listesi</h2>
 
-        <table class="table-fill">
+        <table id="student_list">
             <thead>
             <tr>
                 <th>Id</th>
@@ -25,4 +25,7 @@
             </tbody>
         </table>
     </div>
+    <script>
+        let table = new DataTable('#student_list');
+    </script>
 {% endblock %}
