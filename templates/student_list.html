@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Öğrenci Listesi{% endblock %}
+
+{% block content %}
+    <div>
+        <h2>Öğrenci Listesi</h2>
+
+        <table class="table-fill">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Kullanıcı Adı</th>
+                <th>Numara</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.student_number }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

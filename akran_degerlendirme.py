@@ -74,6 +74,13 @@ def project_ratings():
 
     return render_template('project_ratings.html', projects=projects)
 
+
+@app.route('/student_list')
+def student_list():
+    students = Student.query.order_by(Student.student_number).all()
+    return render_template('student_list.html', students=students)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
