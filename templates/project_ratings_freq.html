@@ -43,7 +43,9 @@
 
     <script>
         $(document).ready(function () {
-            $('#projectRatingsTable').DataTable();
+            $('#projectRatingsTable').DataTable({
+        "pageLength": 50
+    });
         });
     </script>
 {% endblock %}
