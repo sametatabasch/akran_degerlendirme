@@ -26,16 +26,16 @@
                 <tr>
                     <td>{{ student.student_number }}</td>
                     <td>{{ student.username }}</td>
-                    <td>{{ student.rating_1 }}</td>
-                    <td>{{ student.rating_2 }}</td>
-                    <td>{{ student.rating_3 }}</td>
-                    <td>{{ student.rating_4 }}</td>
-                    <td>{{ student.rating_5 }}</td>
-                    <td>{{ student.rating_6 }}</td>
-                    <td>{{ student.rating_7 }}</td>
-                    <td>{{ student.rating_8 }}</td>
-                    <td>{{ student.rating_9 }}</td>
-                    <td>{{ student.rating_10 }}</td>
+                    <td class="{{ 'red' if student.rating_1 > 30 else '' }}">{{ student.rating_1 }}</td>
+                    <td class="{{ 'red' if student.rating_2 > 30 else '' }}">{{ student.rating_2 }}</td>
+                    <td class="{{ 'red' if student.rating_3 > 30 else '' }}">{{ student.rating_3 }}</td>
+                    <td class="{{ 'red' if student.rating_4 > 30 else '' }}">{{ student.rating_4 }}</td>
+                    <td class="{{ 'red' if student.rating_5 > 30 else '' }}">{{ student.rating_5 }}</td>
+                    <td class="{{ 'red' if student.rating_6 > 30 else '' }}">{{ student.rating_6 }}</td>
+                    <td class="{{ 'red' if student.rating_7 > 30 else '' }}">{{ student.rating_7 }}</td>
+                    <td class="{{ 'red' if student.rating_8 > 30 else '' }}">{{ student.rating_8 }}</td>
+                    <td class="{{ 'red' if student.rating_9 > 30 else '' }}">{{ student.rating_9 }}</td>
+                    <td class="{{ 'red' if student.rating_10 > 30 else '' }}">{{ student.rating_10 }}</td>
                 </tr>
             {% endfor %}
         </tbody>

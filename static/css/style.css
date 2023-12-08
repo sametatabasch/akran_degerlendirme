@@ -81,3 +81,8 @@ main {
 footer {
     height: 30px;
 }
+
+td.red {
+    background: #dd5e5e9e;
+    font-weight: bold;
+}
