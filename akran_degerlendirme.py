@@ -146,7 +146,7 @@ def project_ratings_freq():
         func.count(ProjectRating.id).label('rating_10'),
     ).outerjoin(ProjectRating).group_by(Student.id).all()
 
-    return render_template('project_ratings.html', students=rating_counts)
+    return render_template('project_ratings_freq.html', students=rating_counts)
 
 @app.route('/logout')
 def logout():
