@@ -133,7 +133,9 @@ def project_ratings_freq():
 
     # Her bir öğrencinin 1 ile 10 arasındaki puanlarını sayan SQL sorgusu
     rating_counts = db.session.query(
-        Student,
+        Student.id,
+        Student.username,
+        Student.student_number,
         func.count(ProjectRating.id).label('rating_1'),
         func.count(ProjectRating.id).label('rating_2'),
         func.count(ProjectRating.id).label('rating_3'),
