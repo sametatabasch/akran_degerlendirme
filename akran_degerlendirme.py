@@ -3,7 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import RegistrationForm, LoginForm
 from models import db, Student, Project, Image, ProjectRating
-from sqlalchemy import func
+from sqlalchemy import text
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -128,27 +128,33 @@ def register():
 
 @app.route('/project_ratings_freq')
 def project_ratings_freq():
-    # Tüm öğrencilerin puanlarını ve projeleri al
-    students = Student.query.all()
+    # SQL sorgusunu doğrudan çalıştır
+    query = """
+            SELECT
+              s.student_number,
+              s.username,
+              COUNT(CASE WHEN pr.rating = 1 THEN 1 END) as rating_1,
+              COUNT(CASE WHEN pr.rating = 2 THEN 1 END) as rating_2,
+              COUNT(CASE WHEN pr.rating = 3 THEN 1 END) as rating_3,
+              COUNT(CASE WHEN pr.rating = 4 THEN 1 END) as rating_4,
+              COUNT(CASE WHEN pr.rating = 5 THEN 1 END) as rating_5,
+              COUNT(CASE WHEN pr.rating = 6 THEN 1 END) as rating_6,
+              COUNT(CASE WHEN pr.rating = 7 THEN 1 END) as rating_7,
+              COUNT(CASE WHEN pr.rating = 8 THEN 1 END) as rating_8,
+              COUNT(CASE WHEN pr.rating = 9 THEN 1 END) as rating_9,
+              COUNT(CASE WHEN pr.rating = 10 THEN 1 END) as rating_10
+            FROM
+              project_rating pr
+            INNER JOIN
+              student s ON s.id = pr.student_id
+            GROUP BY
+              pr.student_id;
+        """
 
-    # Her bir öğrencinin 1 ile 10 arasındaki puanlarını sayan SQL sorgusu
-    rating_counts = db.session.query(
-        Student.id,
-        Student.username,
-        Student.student_number,
-        func.count(ProjectRating.id).label('rating_1'),
-        func.count(ProjectRating.id).label('rating_2'),
-        func.count(ProjectRating.id).label('rating_3'),
-        func.count(ProjectRating.id).label('rating_4'),
-        func.count(ProjectRating.id).label('rating_5'),
-        func.count(ProjectRating.id).label('rating_6'),
-        func.count(ProjectRating.id).label('rating_7'),
-        func.count(ProjectRating.id).label('rating_8'),
-        func.count(ProjectRating.id).label('rating_9'),
-        func.count(ProjectRating.id).label('rating_10'),
-    ).outerjoin(ProjectRating).group_by(Student.id).all()
-
+    # Sorguyu çalıştır ve sonuçları al
+    rating_counts = db.session.execute(text(query)).fetchall()
     return render_template('project_ratings_freq.html', students=rating_counts)
+
 
 @app.route('/logout')
 def logout():
