@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block title %}Project Ratings{% endblock %}
+
+{% block content %}
+    <h1>Öğrenci Puanları</h1>
+    <table id="projectRatingsTable">
+        <thead>
+            <tr>
+                <th>Öğrenci Numarası</th>
+                <th>Kullanıcı Adı</th>
+                <th>Puan 1</th>
+                <th>Puan 2</th>
+                <th>Puan 3</th>
+                <th>Puan 4</th>
+                <th>Puan 5</th>
+                <th>Puan 6</th>
+                <th>Puan 7</th>
+                <th>Puan 8</th>
+                <th>Puan 9</th>
+                <th>Puan 10</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.student_number }}</td>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.rating_1 }}</td>
+                    <td>{{ student.rating_2 }}</td>
+                    <td>{{ student.rating_3 }}</td>
+                    <td>{{ student.rating_4 }}</td>
+                    <td>{{ student.rating_5 }}</td>
+                    <td>{{ student.rating_6 }}</td>
+                    <td>{{ student.rating_7 }}</td>
+                    <td>{{ student.rating_8 }}</td>
+                    <td>{{ student.rating_9 }}</td>
+                    <td>{{ student.rating_10 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('#projectRatingsTable').DataTable();
+        });
+    </script>
+{% endblock %}

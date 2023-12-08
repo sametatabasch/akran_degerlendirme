@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from forms import RegistrationForm, LoginForm
 from models import db, Student, Project, Image, ProjectRating
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -124,6 +125,28 @@ def register():
 
     return render_template('register.html', title='Kayıt Ol', form=form)
 
+
+@app.route('/project_ratings_freq')
+def project_ratings_freq():
+    # Tüm öğrencilerin puanlarını ve projeleri al
+    students = Student.query.all()
+
+    # Her bir öğrencinin 1 ile 10 arasındaki puanlarını sayan SQL sorgusu
+    rating_counts = db.session.query(
+        Student,
+        func.count(ProjectRating.id).label('rating_1'),
+        func.count(ProjectRating.id).label('rating_2'),
+        func.count(ProjectRating.id).label('rating_3'),
+        func.count(ProjectRating.id).label('rating_4'),
+        func.count(ProjectRating.id).label('rating_5'),
+        func.count(ProjectRating.id).label('rating_6'),
+        func.count(ProjectRating.id).label('rating_7'),
+        func.count(ProjectRating.id).label('rating_8'),
+        func.count(ProjectRating.id).label('rating_9'),
+        func.count(ProjectRating.id).label('rating_10'),
+    ).outerjoin(ProjectRating).group_by(Student.id).all()
+
+    return render_template('project_ratings.html', students=rating_counts)
 
 @app.route('/logout')
 def logout():
