@@ -40,7 +40,6 @@ def home():
         # Projeleri ve öğrencinin verdiği puanları template'e geçir
         return render_template('home.html', projects=projects, project_ratings=project_ratings)
 
-        return render_template('home.html', projects=projects)
     else:
         return redirect(url_for('login'))
 
