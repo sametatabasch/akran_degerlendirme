@@ -86,3 +86,8 @@ td.red {
     background: #dd5e5e9e;
     font-weight: bold;
 }
+
+table figure *{
+    width: 200px;
+
+}

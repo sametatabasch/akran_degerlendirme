@@ -44,6 +44,19 @@ def home():
         return redirect(url_for('login'))
 
 
+@app.route('/leaderboard')
+@login_required
+def leaderboard():
+    # Öğrencinin verdiği puanları ve projeleri al
+    student_ratings = ProjectRating.query.filter_by(student_id=current_user.id).all()
+
+    # Projeleri al
+    projects = Project.query.order_by(Project.average_rating.desc()).all()
+
+    # Projeleri ve öğrencinin verdiği puanları template'e geçir
+    return render_template('leaderboard.html', projects=projects)
+
+
 @app.route('/rate_project/<int:project_id>', methods=['POST'])
 @login_required
 def rate_project(project_id):

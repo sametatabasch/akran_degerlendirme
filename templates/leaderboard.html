@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block title %}Değerlendirme Sayfası{% endblock %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+        <table id="projects">
+            <thead>
+            <tr>
+                <th>İD</th>
+                <th>Resim</th>
+                <th>Çözüm</th>
+                <th>Proje Sahibi</th>
+                <th>Puanı</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.id }}</td>
+                    <td>
+                        <figure id="{{ project.id }}_figure" style="display: block">
+                            <img class="image-container"
+                                 data-fancybox
+                                 id="{{ project.id }}_image"
+                                 src="{{ url_for('static', filename='projects/' + project.owner_name + '/' + project.images[0].filename) }}"
+                                 alt="Project Image"
+
+                                 loading="lazy"
+                            />
+                        </figure>
+                        <figure id="{{ project.id }}_figure_answer" style="display: none">
+                            <img class="image-container"
+                                 data-fancybox
+                                 id="{{ project.id }}_image_answer"
+                                 src="{{ url_for('static', filename='projects/' + project.owner_name + '/' + project.images[1].filename) }}"
+                                 alt="Project Answer Image"
+                                 loading="lazy"
+                            />
+                        </figure>
+                    </td>
+                    <td>
+                        <button onclick="toggleAnswerImage('{{ project.id }}')">Çözüm</button>
+                    </td>
+                    <td>{{ project.owner_name }}</td>
+                    <td>{{ project.average_rating }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    {% else %}
+        <h2>Ana Sayfa</h2>
+        <p>Lütfen giriş yapın.</p>
+        <a href="{{ url_for('login') }}">Giriş Yap</a>
+    {% endif %}
+
+    <script>
+        function toggleAnswerImage(projectId) {
+            var image = document.getElementById(projectId + '_figure');
+            var answerImage = document.getElementById(projectId + '_figure_answer');
+
+            if (image.style.display === 'block') {
+                image.style.display = 'none';
+            } else {
+                image.style.display = 'block';
+            }
+            if (answerImage.style.display === 'block') {
+                answerImage.style.display = 'none';
+            } else {
+                answerImage.style.display = 'block';
+            }
+        }
+
+        let table = new DataTable('#projects', {
+            order: [[4, 'desc']]
+        });
+        Fancybox.bind("[data-fancybox]", {
+            // Your custom options
+        });
+    </script>
+    <script src="{{ url_for('static',filename='js/range.js') }}" type="text/javascript"></script>
+{% endblock %}
