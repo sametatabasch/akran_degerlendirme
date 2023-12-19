@@ -1,5 +1,5 @@
 *, *:before, *:after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
@@ -20,7 +20,7 @@ header nav ul {
 
     list-style: none;
     margin: 0;
-    background: deepskyblue;
+    background: #1ab188;
 }
 
 header nav ul a {
@@ -31,9 +31,13 @@ header nav ul a {
 }
 
 header nav ul a:hover {
-    background: #1565C0;
+    background: rgba(19, 35, 47, 0.9);
+    color: #fff;
 }
-
+header nav ul a.active {
+    background: rgba(19, 35, 47, 0.9);
+    color: #fff;
+}
 main {
     display: flex;
     flex-direction: row;

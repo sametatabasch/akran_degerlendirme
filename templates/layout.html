@@ -17,8 +17,8 @@
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('logout') }}">Çıkış Yap</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('login') }}">Giriş Yap</a></li>
-                    <li><a href="{{ url_for('register') }}">Kayıt Ol</a></li>
+                    <li><a id="login" class="active" href="{{ url_for('login') }}">Giriş Yap</a></li>
+                    <li><a id="register" href="{{ url_for('register') }}">Kayıt Ol</a></li>
                 {% endif %}
             </ul>
         </nav>

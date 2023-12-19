@@ -1,43 +1,53 @@
 $('.form').find('input, textarea').on('keyup blur focus', function (e) {
 
-  var $this = $(this),
-      label = $this.prev('label');
+    var $this = $(this),
+        label = $this.prev('label');
 
-	  if (e.type === 'keyup') {
-			if ($this.val() === '') {
-          label.removeClass('active highlight');
+    if (e.type === 'keyup') {
+        if ($this.val() === '') {
+            label.removeClass('active highlight');
         } else {
-          label.addClass('active highlight');
+            label.addClass('active highlight');
         }
     } else if (e.type === 'blur') {
-    	if( $this.val() === '' ) {
-    		label.removeClass('active highlight');
-			} else {
-		    label.removeClass('highlight');
-			}
+        if ($this.val() === '') {
+            label.removeClass('active highlight');
+        } else {
+            label.removeClass('highlight');
+        }
     } else if (e.type === 'focus') {
 
-      if( $this.val() === '' ) {
-    		label.removeClass('highlight');
-			}
-      else if( $this.val() !== '' ) {
-		    label.addClass('highlight');
-			}
+        if ($this.val() === '') {
+            label.removeClass('highlight');
+        } else if ($this.val() !== '') {
+            label.addClass('highlight');
+        }
     }
 
 });
 
 $('.tab a').on('click', function (e) {
 
-  e.preventDefault();
+    e.preventDefault();
+    $(this).parent().addClass('active');
 
-  $(this).parent().addClass('active');
-  $(this).parent().siblings().removeClass('active');
+    if ($(this).parent()[0].innerText === "Giriş Yap") {
+        console.log("Giriş yap tıklandı")
+        $("nav a#login").addClass('active');
+        console.log($("nav a#login"))
+        $("nav a#register").removeClass('active');
+    } else if ($(this).parent()[0].innerText === "Kayıt Ol") {
+        console.log("Kayıt ol tıklandı")
+        $("nav a#register").addClass('active');
+        $("nav a#login").removeClass('active');
+    }
 
-  target = $(this).attr('href');
+    $(this).parent().siblings().removeClass('active');
 
-  $('.tab-content > div').not(target).hide();
+    target = $(this).attr('href');
 
-  $(target).fadeIn(600);
+    $('.tab-content > div').not(target).hide();
+
+    $('.tab-content > div'+target).fadeIn(600);
 
 });
