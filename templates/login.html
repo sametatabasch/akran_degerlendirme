@@ -13,11 +13,42 @@
     <div class="form">
 
         <ul class="tab-group">
-            <li class="tab active"><a href="#signup">Kayıt Ol</a></li>
-            <li class="tab"><a href="#login">Giriş Yap</a></li>
+            <li class="tab active"><a href="#login">Giriş Yap</a></li>
+            <li class="tab "><a href="#signup">Kayıt Ol</a></li>
         </ul>
 
         <div class="tab-content">
+            <div id="login">
+                <h1>Welcome Back!</h1>
+
+                <form action="{{ url_for('login') }}" method="post">
+                    {{ form.hidden_tag() }}
+
+                    <div class="field-wrap">
+                        <label for="{{ form.username.id }}">
+                            Kullanıdı Adı <span class="req">*</span>
+                        </label>
+                        {{ form.username(class="form-control", id="username") }}
+                        {% for error in form.username.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field-wrap">
+                        <label for="{{ form.password.id }}">
+                            Şifre <span class="req">*</span>
+                        </label>
+                        {{ form.password(class="form-control", id="password") }}
+                        {% for error in form.password.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    {{ form.submit(class="button button-block") }}
+
+                </form>
+
+            </div>
             <div id="signup">
                 <h1>Sign Up for Free</h1>
 
@@ -55,38 +86,6 @@
 
                     <button type="submit" class="button button-block"/>
                     Get Started</button>
-
-                </form>
-
-            </div>
-
-            <div id="login">
-                <h1>Welcome Back!</h1>
-
-                <form action="{{ url_for('login') }}" method="post">
-                    {{ form.hidden_tag() }}
-
-                    <div class="field-wrap">
-                        <label for="{{ form.username.id }}">
-                            Kullanıdı Adı <span class="req">*</span>
-                        </label>
-                        {{ form.username(class="form-control", id="username") }}
-                        {% for error in form.username.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-
-                    <div class="field-wrap">
-                        <label for="{{ form.password.id }}">
-                            Şifre <span class="req">*</span>
-                        </label>
-                        {{ form.password(class="form-control", id="password") }}
-                        {% for error in form.password.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-
-                    {{ form.submit(class="button button-block") }}
 
                 </form>
 
