@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from models import Student
 
+
 class RegistrationForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=2, max=20)])
     student_number = StringField('Öğrenci Numarası', validators=[DataRequired(), Length(min=9, max=9)])
@@ -19,6 +20,7 @@ class RegistrationForm(FlaskForm):
         student = Student.query.filter_by(student_number=student_number.data).first()
         if student:
             raise ValidationError('Bu öğrenci numarası zaten kullanılıyor. Lütfen başka bir numara seçin.')
+
 
 class LoginForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=2, max=20)])
