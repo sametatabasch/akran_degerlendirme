@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Flask App{% endblock %}</title>
-    <!-- Ek stil dosyaları veya CDN bağlantıları burada eklenebilir -->
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/range.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/buttons.css') }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
 
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-    <link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
+    {% block head %}
+
+    {% endblock %}
 </head>
 <body>
     <header>
