@@ -6,7 +6,10 @@ db = SQLAlchemy()
 
 class Student(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     student_number = db.Column(db.String(9), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     project_ratings = db.relationship('ProjectRating', backref='student', lazy=True)

@@ -15,7 +15,8 @@ setup(
         'flask_bcrypt',
         'flask_login',
         'flask_sqlalchemy',
-        'flask_wtf'
+        'flask_wtf',
+        'email_validator'
     ],
     entry_points={
         'console_scripts': [

@@ -123,8 +123,14 @@ def register():
 
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        student = Student(username=form.username.data, student_number=form.student_number.data,
-                          password=hashed_password)
+        student = Student(
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            username=form.username.data,
+            email=form.email.data,
+            student_number=form.student_number.data,
+            password=hashed_password
+        )
         db.session.add(student)
         db.session.commit()
 
