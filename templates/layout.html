@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,41 +8,60 @@
     <!-- Bootsrap 5 CSS -->
     <link rel="stylesheet"
           href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css', _external=True) }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
     {% block head %}
 
     {% endblock %}
 </head>
-<body>
+<body class="d-flex flex-column h-100">
 
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-            <svg class="bi me-2" width="40" height="32">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4">Simple header</span>
-        </a>
+<header>
 
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %}" aria-current="page">Ana Sayfa</a></li>
-            {% if current_user.is_authenticated %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
-            {% else %}
-                <li class="nav-item"><a id="login" class="nav-link {% if request.path == '/login' %}active{% endif %}" href="{{ url_for('login') }}">Giriş Yap</a></li>
-                <li class="nav-item"><a id="register" class="nav-link {% if request.path == '/register' %}active{% endif %}" href="{{ url_for('register') }}">Kayıt Ol</a>
-                </li>
-            {% endif %}
-        </ul>
-    </header>
-    <main role="main" class="container">
-        {% block content %}{% endblock %}
-    </main>
+    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
+        <div class="container">
+                <a class="navbar-brand" href="{{ url_for('home') }}">GençBilişim Akran Değerlendirme</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+                <ul class="nav mb-2 mb-md-0 nav-pills">
+                    <li class="nav-item">
+                        <a href="{{ url_for('home') }}"
+                                            class="nav-link {% if request.path == '/' %}active{% endif %}"
+                                            aria-current="page">Ana
+                        Sayfa</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link {% if request.path == '/profil' %}active{% endif %}" href="{{ url_for('profil') }}">Profilim</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
+                    {% else %}
+                        <li class="nav-item"><a id="login"
+                                                class="nav-link {% if request.path == '/login' %}active{% endif %}"
+                                                href="{{ url_for('login') }}">Giriş Yap</a></li>
+                        <li class="nav-item"><a id="register"
+                                                class="nav-link {% if request.path == '/register' %}active{% endif %}"
+                                                href="{{ url_for('register') }}">Kayıt Ol</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+</header>
+
+<main role="main" class="flex-shrink-0">
+    {% block content %}
+    {% endblock %}
+</main>
 
 
-    <footer>
-    <!-- Sayfa altbilgisi veya diğer altbilgi elemanları burada olabilir -->
-        footer
-    </footer>
-
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <span class="text-muted">Place sticky footer content here.</span>
+    </div>
+</footer>
 <!-- Ek script dosyaları veya CDN bağlantıları burada eklenebilir -->
 {% block js %}
     <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
