@@ -1,100 +1,74 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
 
-{% block title %}Giriş Yap{% endblock %}
+    <!-- Bootsrap 5 CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css', _external=True) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+</head>
+<body class="text-center mt-3">
 
-{% block head %}
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/login_register.css') }}">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="container">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+<div class="container">
+    <main class="form-signin">
+        <form action="{{ url_for('login') }}" method="post">
+            {{ form.hidden_tag() }}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-{% endblock %}
+            <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72"
+                 height="57">
+            <h1 class="h3 mb-3 fw-normal">Giriş Yap</h1>
 
-{% block content %}
+            <div class="form-floating">
 
-    <div class="form">
-
-        <ul class="tab-group">
-            <li class="tab active"><a href="#login">Giriş Yap</a></li>
-            <li class="tab "><a href="#signup">Kayıt Ol</a></li>
-        </ul>
-
-        <div class="tab-content">
-            <div id="login">
-                <h1>Welcome Back!</h1>
-
-                <form action="{{ url_for('login') }}" method="post">
-                    {{ form.hidden_tag() }}
-
-                    <div class="field-wrap">
-                        <label for="{{ form.username.id }}">
-                            Kullanıdı Adı <span class="req">*</span>
-                        </label>
-                        {{ form.username(class="form-control", id="username") }}
-                        {% for error in form.username.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
+                {{ form.username(class="form-control mb-3", id="username",placeholder="") }}
+                <label for="{{ form.username.id }}">
+                    Kullanıcı Adı
+                </label>
+                {% for error in form.username.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
                     </div>
-
-                    <div class="field-wrap">
-                        <label for="{{ form.password.id }}">
-                            Şifre <span class="req">*</span>
-                        </label>
-                        {{ form.password(class="form-control", id="password") }}
-                        {% for error in form.password.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-
-                    {{ form.submit(class="button button-block") }}
-
-                </form>
-
-            </div>
-            <div id="signup">
-                <h1>Sign Up for Free</h1>
-
-                <form action="/" method="post">
-
-                    <div class="top-row">
-                        <div class="field-wrap">
-                            <label>
-                                First Name<span class="req">*</span>
-                            </label>
-                            <input type="text" required autocomplete="off"/>
-                        </div>
-
-                        <div class="field-wrap">
-                            <label>
-                                Last Name<span class="req">*</span>
-                            </label>
-                            <input type="text" required autocomplete="off"/>
-                        </div>
-                    </div>
-
-                    <div class="field-wrap">
-                        <label>
-                            Email Address<span class="req">*</span>
-                        </label>
-                        <input type="email" required autocomplete="off"/>
-                    </div>
-
-                    <div class="field-wrap">
-                        <label>
-                            Set A Password<span class="req">*</span>
-                        </label>
-                        <input type="password" required autocomplete="off"/>
-                    </div>
-
-                    <button type="submit" class="button button-block"/>
-                    Get Started</button>
-
-                </form>
-
+                {% endfor %}
             </div>
 
-        </div><!-- tab-content -->
+            <div class="form-floating">
 
-    </div> <!-- /form -->
-    {% block js %}
-        <script src="{{ url_for('static',filename='js/login_register.js') }}" type="text/javascript"></script>
-    {% endblock %}
-{% endblock %}
+                {{ form.password(class="form-control", id="password",placeholder="") }}
+                <label for="{{ form.password.id }}">
+                    Şifre
+                </label>
+                {% for error in form.password.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {{ form.submit(class="w-100 btn btn-lg btn-primary") }}
+        </form>
+    </main>
+</div>
+
+<!-- Ek script dosyaları veya CDN bağlantıları burada eklenebilir -->
+
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>
