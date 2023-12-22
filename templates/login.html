@@ -1,74 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş Yap</title>
+{% extends "layout.html" %}
 
-    <!-- Bootsrap 5 CSS -->
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css', _external=True) }}">
+{% block title %}Giriş Yap{% endblock %}
+
+{% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-</head>
-<body class="text-center mt-3">
+{% endblock %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div class="container">
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+{% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="container">
+        <main class="form-signin text-center">
+            <form action="{{ url_for('login') }}" method="post">
+                {{ form.hidden_tag() }}
+
+                <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt=""
+                     width="72"
+                     height="57">
+                <h1 class="h3 mb-3 fw-normal">Giriş Yap</h1>
+
+                <div class="form-floating">
+
+                    {{ form.username(class="form-control mb-3", id="username",placeholder="") }}
+                    <label for="{{ form.username.id }}">
+                        Kullanıcı Adı
+                    </label>
+                    {% for error in form.username.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
-<div class="container">
-    <main class="form-signin">
-        <form action="{{ url_for('login') }}" method="post">
-            {{ form.hidden_tag() }}
 
-            <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72"
-                 height="57">
-            <h1 class="h3 mb-3 fw-normal">Giriş Yap</h1>
+                <div class="form-floating">
 
-            <div class="form-floating">
+                    {{ form.password(class="form-control", id="password",placeholder="") }}
+                    <label for="{{ form.password.id }}">
+                        Şifre
+                    </label>
+                    {% for error in form.password.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Kayıt ol</a>
+                    {{ form.submit(class="btn btn-lg btn-primary") }}
+                </div>
 
-                {{ form.username(class="form-control mb-3", id="username",placeholder="") }}
-                <label for="{{ form.username.id }}">
-                    Kullanıcı Adı
-                </label>
-                {% for error in form.username.errors %}
-                    <div class="invalid-feedback">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
+            </form>
+        </main>
+    </div>
 
-            <div class="form-floating">
-
-                {{ form.password(class="form-control", id="password",placeholder="") }}
-                <label for="{{ form.password.id }}">
-                    Şifre
-                </label>
-                {% for error in form.password.errors %}
-                    <div class="invalid-feedback">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
-
-            {{ form.submit(class="w-100 btn btn-lg btn-primary") }}
-        </form>
-    </main>
-</div>
-
-<!-- Ek script dosyaları veya CDN bağlantıları burada eklenebilir -->
-
-
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-</body>
-</html>
+{% endblock %}
