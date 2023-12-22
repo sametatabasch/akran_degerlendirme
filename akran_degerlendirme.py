@@ -43,6 +43,11 @@ def home():
     else:
         return redirect(url_for('login'))
 
+@app.route('/profile')
+@login_required
+def profile():
+
+    return render_template('profile.html')
 
 @app.route('/leaderboard')
 @login_required

@@ -32,7 +32,7 @@
                                             aria-current="page">Ana
                         Sayfa</a></li>
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link {% if request.path == '/profil' %}active{% endif %}" href="{{ url_for('profil') }}">Profilim</a></li>
+                        <li class="nav-item"><a class="nav-link {% if request.path == '/profile' %}active{% endif %}" href="{{ url_for('profile') }}">Profilim</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
                     {% else %}
                         <li class="nav-item"><a id="login"
