@@ -4,35 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Flask App{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
 
+    <!-- Bootsrap 5 CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css', _external=True) }}">
     {% block head %}
 
     {% endblock %}
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('logout') }}">Çıkış Yap</a></li>
-                {% else %}
-                    <li><a id="login" class="active" href="{{ url_for('login') }}">Giriş Yap</a></li>
-                    <li><a id="register" href="{{ url_for('register') }}">Kayıt Ol</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
 
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+            <span class="fs-4">Simple header</span>
+        </a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %}" aria-current="page">Ana Sayfa</a></li>
+            {% if current_user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
+            {% else %}
+                <li class="nav-item"><a id="login" class="nav-link {% if request.path == '/login' %}active{% endif %}" href="{{ url_for('login') }}">Giriş Yap</a></li>
+                <li class="nav-item"><a id="register" class="nav-link {% if request.path == '/register' %}active{% endif %}" href="{{ url_for('register') }}">Kayıt Ol</a>
+                </li>
+            {% endif %}
+        </ul>
+    </header>
     <main role="main" class="container">
         {% block content %}{% endblock %}
     </main>
 
+
     <footer>
-        <!-- Sayfa altbilgisi veya diğer altbilgi elemanları burada olabilir -->
+    <!-- Sayfa altbilgisi veya diğer altbilgi elemanları burada olabilir -->
         footer
     </footer>
 
-    <!-- Ek script dosyaları veya CDN bağlantıları burada eklenebilir -->
+<!-- Ek script dosyaları veya CDN bağlantıları burada eklenebilir -->
+{% block js %}
+    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
 </body>
 </html>
