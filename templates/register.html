@@ -21,7 +21,7 @@
             {{ form.hidden_tag() }}
 
             <div class="form-floating">
-                {{ form.first_name(placeholder="", class="form-control mb-3", id="username") }}
+                {{ form.first_name(placeholder="", class="form-control mb-3", id="first_name") }}
                 {{ form.first_name.label(for="first_name") }}
                 {% for error in form.first_name.errors %}
                     <span style="color: red;">{{ error }}</span>
@@ -29,7 +29,7 @@
             </div>
 
             <div class="form-floating">
-                {{ form.last_name(placeholder="", class="form-control mb-3", id="username") }}
+                {{ form.last_name(placeholder="", class="form-control mb-3", id="last_name") }}
                 {{ form.last_name.label(for="last_name") }}
                 {% for error in form.last_name.errors %}
                     <span style="color: red;">{{ error }}</span>
