@@ -1,13 +1,19 @@
+import json
+
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from forms import RegistrationForm, LoginForm
-from models import db, Student, Project, Image, ProjectRating
+from forms import RegistrationForm, LoginForm, ProfileForm
+from models import db, Student, Project, ProjectRating
 from sqlalchemy import text
+from tinify import tinify
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['SECRET_KEY'] = 'gizli_anahtar'
+app.config.from_pyfile('config.py')
+# Tinify API anahtarını ayarlayın
+tinify.key = app.config['TINIFY_KEY']
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -43,11 +49,100 @@ def home():
     else:
         return redirect(url_for('login'))
 
-@app.route('/profile')
+
+def compress_and_save_image(file, username):
+    try:
+        # Güvenli dosya adını oluştur
+        filename = secure_filename(file.filename)
+
+        # Kullanıcı adında bir dizin oluştur
+        user_folder = os.path.join(app.config['UPLOAD_FOLDER'], username)
+        os.makedirs(user_folder, exist_ok=True)
+
+        # Resmi sıkıştır ve dosyayı kaydet
+        source = tinify.from_buffer(file.read())
+        source.to_file(os.path.join(user_folder, filename))
+
+        print(f"Resim sıkıştırma başarılı. Yeni dosya: {filename}")
+        return filename
+    except tinify.AccountError as e:
+        flash(f'Hesap hatası: {e}', 'danger')
+        return False
+    except tinify.ClientError as e:
+        flash(f'Geçersiz istek hatası: {e}', 'danger')
+        return False
+    except tinify.ServerError as e:
+        flash(f'Sunucu hatası: {e}', 'danger')
+        return False
+    except tinify.ConnectionError as e:
+        flash(f'İletişim hatası: {e}', 'danger')
+        return False
+    except Exception as e:
+        flash(f'İşlem hatası: {e}', 'danger')
+        return False
+
+
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    #todo Öğrencinin proje bilgileri kayıtlı ise var olanı güncellemeli. Şuan yeni proje oluşturuyor.
+    form = ProfileForm()
 
-    return render_template('profile.html')
+    if form.validate_on_submit():
+        # Formdan gelen bilgileri kullanarak öğrenci bilgilerini güncelle
+        current_user.first_name = form.first_name.data
+        current_user.last_name = form.last_name.data
+        current_user.email = form.email.data
+        current_user.student_number = form.student_number.data
+
+        # Eğer yeni şifre girilmişse, şifreyi güncelle
+        if form.password.data:
+            current_user.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+
+        # Eğer vize projesi dosyaları yüklenmişse, projeleri kaydet
+        if form.vize_project_upload_1.data and form.vize_project_upload_2.data:
+            vize_project_file_1 = form.vize_project_upload_1.data
+            vize_project_file_2 = form.vize_project_upload_2.data
+
+            filename_1 = compress_and_save_image(vize_project_file_1, current_user.username)
+            filename_2 = compress_and_save_image(vize_project_file_2, current_user.username)
+
+            if not filename_1 and not filename_2:
+                return redirect(url_for('profile'))
+
+            # Veritabanına vize projelerini kaydet
+            new_vize_project = Project(
+                student_id=current_user.id,
+                data=json.dumps({
+                    'image': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_1}",
+                    'image_answer': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_2}"}),
+                tag='vize'
+            )
+            db.session.add(new_vize_project)
+
+        # Eğer final projesi YouTube linki verilmişse, linki kaydet
+        if form.final_project_youtube_link.data:
+            new_final_project = Project(
+                student_id=current_user.id,
+                data=json.dumps({
+                    'youtube_link': form.final_project_youtube_link.data
+                }),
+                tag='final'
+            )
+            db.session.add(new_final_project)
+
+        # Veritabanına yapılan değişiklikleri kaydet
+        db.session.commit()
+
+        flash('Profil başarıyla güncellendi!', 'success')
+        return redirect(url_for('profile'))
+
+    if form.errors:
+        flash('Formda hatalı veri var Form hatalarını kontrol edin', 'danger')
+
+    # Formun ilk defa gösterilmesi veya geçersiz bir durumda
+    return render_template('profile.html', form=form)
+
 
 @app.route('/leaderboard')
 @login_required
@@ -80,7 +175,7 @@ def rate_project(project_id):
 
     # Proje ortalama puanını güncelle
     project = Project.query.get(project_id)
-    project.update_average_rating()
+    project.update_rating()
 
     return jsonify({'success': True})
 
@@ -112,7 +207,7 @@ def login():
         if student and bcrypt.check_password_hash(student.password, form.password.data):
             login_user(student)
             flash('Giriş başarılı!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('profile'))
         else:
             flash('Giriş başarısız. Lütfen kullanıcı adı ve şifrenizi kontrol edin.', 'danger')
 

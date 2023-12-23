@@ -1,11 +1,151 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 
-{% block title %}Profil Sayfası{% endblock %}
-
-{% block head %}
-
-{% endblock %}
+{% block title %}Profil{% endblock %}
 
 {% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Profil Bilgileri</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{{ url_for('profile') }}" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
 
+                            <div class="form-floating mb-3">
+                                {{ form.first_name(placeholder="", class="form-control", id="first_name",value=current_user.first_name) }}
+                                {{ form.first_name.label(for="first_name") }}
+                                {% for error in form.first_name.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.last_name(placeholder="", class="form-control", id="last_name", value=current_user.last_name) }}
+                                {{ form.last_name.label(for="last_name") }}
+                                {% for error in form.last_name.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.username(placeholder="", class="form-control", id="username", value=current_user.username) }}
+                                {{ form.username.label(for="username") }}
+                                {% for error in form.username.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.email(placeholder="", class="form-control", id="email", value=current_user.email) }}
+                                {{ form.email.label(for="email") }}
+                                {% for error in form.email.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.student_number(placeholder="", class="form-control", id="student_number", value=current_user.student_number) }}
+                                {{ form.student_number.label(for="student_number") }}
+                                {% for error in form.student_number.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.password(placeholder="", class="form-control", id="password",autocomplete="off") }}
+                                {{ form.password.label(for="password") }}
+                                {% for error in form.password.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.confirm_password(placeholder="", class="form-control", id="confirm_password") }}
+                                {{ form.confirm_password.label(for="confirm_password") }}
+                                {% for error in form.confirm_password.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Accordion -->
+                            <div class="accordion mb-3" id="projectAccordion">
+
+                                <!-- Vize Projeleri -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="vizeHeading">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#vizeCollapse" aria-expanded="true"
+                                                aria-controls="vizeCollapse">
+                                            Vize Projeleri
+                                        </button>
+                                    </h2>
+                                    <div id="vizeCollapse" class="accordion-collapse collapse show"
+                                         aria-labelledby="vizeHeading" data-bs-parent="#projectAccordion">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">
+                                                {{ form.vize_project_upload_1.label(for="vize_project_upload_1", class="form-label") }}
+                                                {{ form.vize_project_upload_1(placeholder="", class="form-control", id="vize_project_upload_1") }}
+                                                {% for error in form.vize_project_upload_1.errors %}
+                                                    <span style="color: red;">{{ error }}</span>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="mb-3">
+                                                {{ form.vize_project_upload_2.label(for="vize_project_upload_1", class="form-label") }}
+                                                {{ form.vize_project_upload_2(placeholder="", class="form-control", id="vize_project_upload_2") }}
+                                                {% for error in form.vize_project_upload_2.errors %}
+                                                    <span style="color: red;">{{ error }}</span>
+                                                {% endfor %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Final Projesi -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="finalHeading">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#finalCollapse"
+                                                aria-expanded="false" aria-controls="finalCollapse">
+                                            Final Projesi
+                                        </button>
+                                    </h2>
+                                    <div id="finalCollapse" class="accordion-collapse collapse"
+                                         aria-labelledby="finalHeading" data-bs-parent="#projectAccordion">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">
+                                                {{ form.final_project_youtube_link.label(for="final_project_youtube_link", class="form-label") }}
+                                                {{ form.final_project_youtube_link(placeholder="", class="form-control", id="final_project_youtube_link") }}
+                                                {% for error in form.final_project_youtube_link.errors %}
+                                                    <span style="color: red;">{{ error }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

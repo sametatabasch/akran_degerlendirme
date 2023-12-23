@@ -16,7 +16,8 @@ setup(
         'flask_login',
         'flask_sqlalchemy',
         'flask_wtf',
-        'email_validator'
+        'email_validator',
+        'tinify'
     ],
     entry_points={
         'console_scripts': [
