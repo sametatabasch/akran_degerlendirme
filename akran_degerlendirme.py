@@ -9,6 +9,7 @@ from sqlalchemy import text
 from tinify import tinify
 from werkzeug.utils import secure_filename
 import os
+import helper
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -34,17 +35,27 @@ with app.app_context():
 def home():
     if current_user.is_authenticated:
 
+        return render_template('home.html')
+
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/rate_final_projects/')
+def rate_final_projects():
+    if current_user.is_authenticated:
+
         # Öğrencinin verdiği puanları ve projeleri al
         student_ratings = ProjectRating.query.filter_by(student_id=current_user.id).all()
 
         # Projeleri al
-        projects = Project.query.all()
+        projects = Project.query.filter_by(tag="final").all()
 
         # Projelerle ilişkilendirilmiş puanları içeren bir sözlük oluştur
         project_ratings = {rating.project_id: rating.rating for rating in student_ratings}
 
         # Projeleri ve öğrencinin verdiği puanları template'e geçir
-        return render_template('home.html', projects=projects, project_ratings=project_ratings)
+        return render_template('final.html', projects=projects, project_ratings=project_ratings)
 
     else:
         return redirect(url_for('login'))
@@ -85,7 +96,7 @@ def compress_and_save_image(file, username):
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    #todo Öğrencinin proje bilgileri kayıtlı ise var olanı güncellemeli. Şuan yeni proje oluşturuyor.
+    # todo Öğrencinin proje bilgileri kayıtlı ise var olanı güncellemeli. Şuan yeni proje oluşturuyor.
     form = ProfileForm()
 
     if form.validate_on_submit():
@@ -122,10 +133,11 @@ def profile():
 
         # Eğer final projesi YouTube linki verilmişse, linki kaydet
         if form.final_project_youtube_link.data:
+            video_id = helper.get_youtube_id(form.final_project_youtube_link.data)
             new_final_project = Project(
                 student_id=current_user.id,
                 data=json.dumps({
-                    'youtube_link': form.final_project_youtube_link.data
+                    'youtube_video_id': video_id
                 }),
                 tag='final'
             )
@@ -278,6 +290,18 @@ def project_ratings_freq():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+@app.template_filter('json_decode')
+def json_decode(value):
+    """
+    jinja2 templetelerde json_decode kullanabilmek için filtre ekliyoruz
+    örnek kullanım final.html de
+    {% set project_data = project.data|safe|json_decode %}
+    :param value:
+    :return:
+    """
+    return json.loads(value)
 
 
 if __name__ == '__main__':

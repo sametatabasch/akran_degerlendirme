@@ -16,17 +16,46 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
 -->
 
 {% block content %}
-    {% if current_user.is_authenticated %}
-        <div class="container mt-5">
-            <a href="{{ url_for('profile') }}" class="btn btn-primary">Vize</a>
-            <a href="{{ url_for('rate_final_projects') }}" class="btn btn-primary">Final</a>
-        </div>
-    {% else %}
-        <h2>Ana Sayfa</h2>
-        <p>Lütfen giriş yapın.</p>
-        <a href="{{ url_for('login') }}">Giriş Yap</a>
-    {% endif %}
+    <div class="container-fluid mt-5">
+        <div class="row">
+            {% if current_user.is_authenticated %}
+                {% for project in projects %}
+                    <div id="{{ project.id }}_container" class="project-container"
+                         {% if loop.first %}style="display: block;"
+                         {% else %}style="display: none;"{% endif %}
+                    >
+                        {% set project_data = project.data|safe|json_decode %}
 
+                        <div class="ratio ratio-16x9">
+
+                            <iframe src="https://www.youtube.com/embed/{{ project_data['youtube_video_id'] }}" title="YouTube video"
+                                    allowfullscreen></iframe>
+                        </div>
+
+                        <form class="rating-form" id="{{ project.id }}_form" data-project-id="{{ project.id }}">
+                            <div class="range-slider">
+                                <input id="{{ project.id }}_rating" class="range-slider__range" type="range"
+                                       value="{{ project_ratings.get(project.id,0) }}" min="0" max="10">
+                                <span class="range-slider__value">0</span>
+                            </div>
+
+                            <button class="button -blue center" type="button" onclick="rateProject('{{ project.id }}')">
+                                Puan
+                                Ver
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+                <button class="button -green center" onclick="showPreviousProject()">Önceki Proje</button>
+                <button class="button -green center" onclick="showNextProject()">Sonraki Proje</button>
+
+            {% else %}
+                <h2>Ana Sayfa</h2>
+                <p>Lütfen giriş yapın.</p>
+                <a href="{{ url_for('login') }}">Giriş Yap</a>
+            {% endif %}
+        </div>
+    </div>
     <script>
         // range.js
 

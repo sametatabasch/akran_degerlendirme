@@ -16,17 +16,53 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
 -->
 
 {% block content %}
-    {% if current_user.is_authenticated %}
-        <div class="container mt-5">
-            <a href="{{ url_for('profile') }}" class="btn btn-primary">Vize</a>
-            <a href="{{ url_for('rate_final_projects') }}" class="btn btn-primary">Final</a>
-        </div>
-    {% else %}
-        <h2>Ana Sayfa</h2>
-        <p>Lütfen giriş yapın.</p>
-        <a href="{{ url_for('login') }}">Giriş Yap</a>
-    {% endif %}
+    <div class="container mt-5">
+        {% if current_user.is_authenticated %}
+            <button class="button -green center" onclick="showPreviousProject()">Önceki Proje</button>
+            {% for project in projects %}
+                <div id="{{ project.id }}_container" class="project-container"
+                     {% if loop.first %}style="display: block;"
+                     {% else %}style="display: none;"{% endif %} title="Çözümü Görmek için tıklayın">
+                    <figure id="{{ project.id }}_figure" style="display: block">
+                        <img class="image-container"
+                             id="{{ project.id }}_image"
+                             src="{{ url_for('static', filename='projects/' + project.owner_name + '/' + project.images[0].filename) }}"
+                             alt="Project Image"
+                             onclick="toggleAnswerImage('{{ project.id }}')"
+                             loading="lazy"
+                        />
+                    </figure>
+                    <figure id="{{ project.id }}_figure_answer" style="display: none">
+                        <img class="image-container"
+                             id="{{ project.id }}_image_answer"
+                             src="{{ url_for('static', filename='projects/' + project.owner_name + '/' + project.images[1].filename) }}"
+                             alt="Project Answer Image"
+                             onclick="toggleAnswerImage('{{ project.id }}')"
+                             loading="lazy"
+                        />
+                    </figure>
 
+                    <form class="rating-form" id="{{ project.id }}_form" data-project-id="{{ project.id }}">
+                        <div class="range-slider">
+                            <input id="{{ project.id }}_rating" class="range-slider__range" type="range"
+                                   value="{{ project_ratings.get(project.id,0) }}" min="0" max="10">
+                            <span class="range-slider__value">0</span>
+                        </div>
+
+                        <button class="button -blue center" type="button" onclick="rateProject('{{ project.id }}')">Puan
+                            Ver
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+            <button class="button -green center" onclick="showNextProject()">Sonraki Proje</button>
+
+        {% else %}
+            <h2>Ana Sayfa</h2>
+            <p>Lütfen giriş yapın.</p>
+            <a href="{{ url_for('login') }}">Giriş Yap</a>
+        {% endif %}
+    </div>
     <script>
         // range.js
 
