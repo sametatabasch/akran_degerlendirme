@@ -96,7 +96,6 @@ def compress_and_save_image(file, username):
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    # todo Öğrencinin proje bilgileri kayıtlı ise var olanı güncellemeli. Şuan yeni proje oluşturuyor.
     form = ProfileForm()
 
     if form.validate_on_submit():
@@ -120,28 +119,49 @@ def profile():
 
             if not filename_1 and not filename_2:
                 return redirect(url_for('profile'))
+            # Kontrol etmek için öğrencinin aynı tag'deki projelerini al
+            existing_project = Project.query.filter_by(student_id=current_user.id, tag='vize').first()
 
-            # Veritabanına vize projelerini kaydet
-            new_vize_project = Project(
-                student_id=current_user.id,
-                data=json.dumps({
+            if existing_project:
+                # Öğrencinin zaten aynı tag'deki bir projesi varsa, ilk projeyi güncelle
+                existing_project.data = json.dumps({
                     'image': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_1}",
-                    'image_answer': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_2}"}),
-                tag='vize'
-            )
-            db.session.add(new_vize_project)
+                    'image_answer': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_2}"})
+            else:
+                # Veritabanına vize projelerini kaydet
+                new_vize_project = Project(
+                    student_id=current_user.id,
+                    data=json.dumps({
+                        'image': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_1}",
+                        'image_answer': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_2}"}),
+                    tag='vize'
+                )
+                db.session.add(new_vize_project)
 
         # Eğer final projesi YouTube linki verilmişse, linki kaydet
         if form.final_project_youtube_link.data:
-            video_id = helper.get_youtube_id(form.final_project_youtube_link.data)
-            new_final_project = Project(
-                student_id=current_user.id,
-                data=json.dumps({
+            # Kontrol etmek için öğrencinin aynı tag'deki projelerini al
+            existing_project = Project.query.filter_by(student_id=current_user.id, tag='final').first()
+            if existing_project:
+                print("proje var güncellenecek")
+                # Öğrencinin zaten aynı tag'deki bir projesi varsa, ilk projeyi güncelle
+                video_id = helper.get_youtube_id(form.final_project_youtube_link.data)
+                existing_project.data = json.dumps({
                     'youtube_video_id': video_id
-                }),
-                tag='final'
-            )
-            db.session.add(new_final_project)
+                })
+            else:
+                print("proje yok eklenecek")
+                # Eğer öğrencinin aynı tag'de bir projesi yoksa, yeni bir proje oluştur
+                video_id = helper.get_youtube_id(form.final_project_youtube_link.data)
+                print("Video id:", video_id)
+                new_final_project = Project(
+                    student_id=current_user.id,
+                    data=json.dumps({
+                        'youtube_video_id': video_id
+                    }),
+                    tag='final'
+                )
+                db.session.add(new_final_project)
 
         # Veritabanına yapılan değişiklikleri kaydet
         db.session.commit()
