@@ -27,7 +27,7 @@ class Student(UserMixin, db.Model):
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
-    average_rating = db.Column(db.Float, default=0.0)
+    sum_rating = db.Column(db.Float, default=0.0)
     data = db.Column(db.Text, nullable=False)
     tag = db.Column(db.String(10), nullable=False)
     ratings = db.relationship('ProjectRating', backref='project', lazy=True)
@@ -35,9 +35,9 @@ class Project(db.Model):
     def update_rating(self):
         if self.ratings:
             total_ratings = sum([rating.rating for rating in self.ratings])
-            self.average_rating = total_ratings
+            self.sum_rating = total_ratings
         else:
-            self.average_rating = 0.0
+            self.sum_rating = 0.0
 
         db.session.commit()
 
