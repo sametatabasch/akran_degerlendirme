@@ -24,7 +24,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Student.query.get(int(user_id))
+    return db.session.get(Student, int(user_id))
 
 
 with app.app_context():
