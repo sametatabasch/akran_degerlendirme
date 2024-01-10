@@ -16,38 +16,40 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
 -->
 
 {% block content %}
-    <div class="container-fluid mt-5">
+    <div class="container-fluid">
         <div class="row">
             {% if current_user.is_authenticated %}
                 {% for project in projects %}
-                    <div id="{{ project.id }}_container" class="project-container"
-                         {% if loop.first %}style="display: block;"
+                    <div id="{{ project.id }}_container"
+                         class="project-container justify-content-center align-items-center flex-column"
+                         {% if loop.first %}style="display: flex;"
                          {% else %}style="display: none;"{% endif %}
                     >
                         {% set project_data = project.data|safe|json_decode %}
 
-                        <div class="ratio ratio-16x9">
-
-                            <iframe src="https://www.youtube.com/embed/{{ project_data['youtube_video_id'] }}" title="YouTube video"
+                        <div class=" ytplayer_container">
+                            <iframe width="1280" height="720"
+                                    src="https://www.youtube.com/embed/{{ project_data['youtube_video_id'] }}"
+                                    title="YouTube video"
                                     allowfullscreen></iframe>
                         </div>
 
-                        <form class="rating-form" id="{{ project.id }}_form" data-project-id="{{ project.id }}">
-                            <div class="range-slider">
-                                <input id="{{ project.id }}_rating" class="range-slider__range" type="range"
-                                       value="{{ project_ratings.get(project.id,0) }}" min="0" max="10">
-                                <span class="range-slider__value">0</span>
-                            </div>
 
-                            <button class="button -blue center" type="button" onclick="rateProject('{{ project.id }}')">
-                                Puan
-                                Ver
-                            </button>
-                        </form>
                     </div>
                 {% endfor %}
-                <button class="button -green center" onclick="showPreviousProject()">Önceki Proje</button>
-                <button class="button -green center" onclick="showNextProject()">Sonraki Proje</button>
+                <div class="d-flex flex-row justify-content-center">
+                    <button id="previousProjectButton" class="button -green center"
+                    >Önceki Proje
+                    </button>
+                    <button class="button -blue center" data-bs-toggle="modal" data-bs-target="#puanVerModal"
+
+                    >Puan Ver
+                    </button>
+                    <button id="nextProjectButton" class="button -green center">
+                        Sonraki Proje
+                    </button>
+                </div>
+
 
             {% else %}
                 <h2>Ana Sayfa</h2>
@@ -56,65 +58,120 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
             {% endif %}
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="puanVerModal" tabindex="-1" aria-labelledby="puanVerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="puanVerModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="rating-form" id="">
+                        <div class="range-slider">
+                            <input id="" class="range-slider__range" type="range"
+                                   value="" min="0" max="10">
+                            <span class="range-slider__value">0</span>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button id="submitModal" type="button" class="btn btn-primary">Puan Ver
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // range.js
+        $(function () {
+            var puanVerModalEl = document.getElementById('puanVerModal')
+            var puanVerModal = new bootstrap.Modal(puanVerModalEl)
+            var currentProjectIndex = 0;
+            var projects = [{% for project in projects %}{{ project.id }}{% if not loop.last %}, {% endif %}{% endfor %}];
+            var project_raitings = {{ project_ratings }} // todo çoklu raiting
 
-        var currentProjectIndex = 0;
-        var projects = [{% for project in projects %}{{ project.id }}{% if not loop.last %}, {% endif %}{% endfor %}];
+                function showNextProject() {
+                    document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
 
-        function showNextProject() {
-            document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
+                    currentProjectIndex = (currentProjectIndex + 1) % projects.length;
 
-            currentProjectIndex = (currentProjectIndex + 1) % projects.length;
-
-            document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'block';
-        }
-
-        function showPreviousProject() {
-            document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
-
-            currentProjectIndex = (currentProjectIndex - 1 + projects.length) % projects.length;
-
-            document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'block';
-        }
-
-        function toggleAnswerImage(projectId) {
-            var image = document.getElementById(projectId + '_figure');
-            var answerImage = document.getElementById(projectId + '_figure_answer');
-
-            if (image.style.display === 'block') {
-                image.style.display = 'none';
-            } else {
-                image.style.display = 'block';
-            }
-            if (answerImage.style.display === 'block') {
-                answerImage.style.display = 'none';
-            } else {
-                answerImage.style.display = 'block';
-            }
-        }
-
-        function rateProject(projectId) {
-            var rating = document.getElementById(projectId + '_rating').value;
-
-            // Ajax ile puan verme işlemi
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/rate_project/' + projectId, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onload = function () {
-                var response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    // Başarılı işlem sonrasında yapılacaklar
-                    alert('Puan başarıyla verildi!');
-                    console.log('Puan başarıyla verildi!');
-                } else {
-                    // Hata durumunda yapılacaklar
-                    console.error('Puan verme işlemi başarısız!');
-                    alert('Puan verme işlemi başarısız!');
+                    document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'flex';
                 }
-            };
-            xhr.send('rating=' + rating);
-        }
+
+            var nextProjectButton = $('#nextProjectButton')
+            nextProjectButton.click(showNextProject)
+
+            function showPreviousProject() {
+                document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
+
+                currentProjectIndex = (currentProjectIndex - 1 + projects.length) % projects.length;
+
+                document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'flex';
+            }
+
+            var previousProjectButton = $('#previousProjectButton')
+            previousProjectButton.click(showPreviousProject)
+
+            function rateProject() {
+                var rating = document.getElementById(projects[currentProjectIndex] + '_rating').value;
+
+                // Ajax ile puan verme işlemi
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/rate_project/' + projects[currentProjectIndex], true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        // Başarılı işlem sonrasında yapılacaklar
+                        puanVerModal.hide()
+                        project_raitings[projects[currentProjectIndex]] = rating
+                        alert(projects[currentProjectIndex] + 'Puan başarıyla verildi!');
+                        console.log('Puan başarıyla verildi!');
+                    } else {
+                        // Hata durumunda yapılacaklar
+                        console.error('Puan verme işlemi başarısız!');
+                        alert('Puan verme işlemi başarısız!');
+                    }
+                };
+                xhr.send('rating=' + rating);
+            }
+
+            var modalSubmitButton = $('#submitModal')
+            modalSubmitButton.click(rateProject)
+
+            /**
+             * Modal içerisindeki forma proje bilgilerini aktarıryoruz
+             *
+             */
+
+            puanVerModalEl.addEventListener('show.bs.modal', function (event) {
+                console.log("modal açıldı")
+                // Button that triggered the modal
+                var button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                var project_id = projects[currentProjectIndex]
+
+                // If necessary, you could initiate an AJAX request here
+                // and then do the updating in a callback.
+                //
+                // Update the modal's content.
+                var modalTitle = puanVerModalEl.querySelector('.modal-title')
+                var modalFrom = puanVerModalEl.querySelector('form')
+                var modalRange = puanVerModalEl.querySelector('form input[type="range"]');
+                var modalSubmitButton = puanVerModalEl.querySelector('#submit')
+
+                modalFrom.id = project_id + "_form";
+                modalRange.id = project_id + "_rating";
+                modalRange.value = project_raitings[project_id];
+                rangeSlider()
+
+
+            })
+        });
     </script>
     <script src="{{ url_for('static',filename='js/range.js') }}" type="text/javascript"></script>
 {% endblock %}

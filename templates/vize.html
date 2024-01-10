@@ -16,7 +16,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
 -->
 
 {% block content %}
-    <div class="container mt-5">
+    <div class="container ">
         {% if current_user.is_authenticated %}
             <button class="button -green center" onclick="showPreviousProject()">Önceki Proje</button>
             {% for project in projects %}
