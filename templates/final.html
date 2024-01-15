@@ -30,7 +30,6 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                         <div class=" ytplayer_container">
                             <iframe width="1280" height="720"
                                     src="https://www.youtube.com/embed/{{ project_data['youtube_video_id'] }}"
-                                    title="YouTube video"
                                     allowfullscreen></iframe>
                         </div>
 
@@ -69,8 +68,74 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                 </div>
                 <div class="modal-body">
                     <form class="rating-form" id="">
+                        <label for="time_rating">Süre
+                            <button
+                                    type="button"
+                                    class="btn btn-light btn-sm p-1"
+                                    data-bs-container="body"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="right"
+                                    title="Süre"
+                                    data-bs-content="Animasyonun uzunluğuna verdiğiniz puandır. İdeal olanı ne çok uzun ne de çok kısa olmasıdır."
+                            >
+                                ?
+                            </button>
+                        </label>
                         <div class="range-slider">
-                            <input id="" class="range-slider__range" type="range"
+                            <input id="time_rating" name="time_rating" class="range-slider__range" type="range"
+                                   value="" min="0" max="10">
+                            <span class="range-slider__value">0</span>
+                        </div>
+                        <label for="character_rating">Karakter
+                            <button
+                                    type="button"
+                                    class="btn btn-light btn-sm p-1"
+                                    data-bs-container="body"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="right"
+                                    title="Karakter"
+                                    data-bs-content="Animasyonda kullanılan karakterlerin görünümüne verdiğiniz puandır."
+                            >
+                                ?
+                            </button>
+                        </label>
+                        <div class="range-slider">
+                            <input id="character_rating" name="character_rating" class="range-slider__range"
+                                   type="range"
+                                   value="" min="0" max="10">
+                            <span class="range-slider__value">0</span>
+                        </div>
+                        <label for="senario_rating">Hikaye
+                        <button
+                                    type="button"
+                                    class="btn btn-light btn-sm p-1"
+                                    data-bs-container="body"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="right"
+                                    title="Hikaye"
+                                    data-bs-content="Animasyonun hikayesine verdiğiniz puandır. Animasyonun bir hikayeye sahip olması onu daha güzel hale getirir."
+                            >
+                                ?
+                            </button></label>
+                        <div class="range-slider">
+                            <input id="senario_rating" name="senario_rating" class="range-slider__range" type="range"
+                                   value="" min="0" max="10">
+                            <span class="range-slider__value">0</span>
+                        </div>
+                        <label for="reality_rating">Gerçeklik
+                        <button
+                                    type="button"
+                                    class="btn btn-light btn-sm p-1"
+                                    data-bs-container="body"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="right"
+                                    title="Gerçeklik"
+                                    data-bs-content="Animasyonda bulunan karakterlerin ve nesnelerin hareketlerinin gerçek dünyadaki hareketlere benzeme oranına verdiğiniz puandır."
+                            >
+                                ?
+                            </button></label>
+                        <div class="range-slider">
+                            <input id="reality_rating" name="reality_rating" class="range-slider__range" type="range"
                                    value="" min="0" max="10">
                             <span class="range-slider__value">0</span>
                         </div>
@@ -161,7 +226,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                 // Update the modal's content.
                 var modalTitle = puanVerModalEl.querySelector('.modal-title')
                 var modalFrom = puanVerModalEl.querySelector('form')
-                var modalRange = puanVerModalEl.querySelector('form input[type="range"]');
+                var modalRange = puanVerModalEl.querySelector('form input[type="range"]');// todo birden fazla range oluşturacağım. Bunların ortalamasını puan olarak hesaplayıp proje tablosuna yazacağım diğerlerini liste yada dict olarak kaydedeceğim 
                 var modalSubmitButton = puanVerModalEl.querySelector('#submit')
 
                 modalFrom.id = project_id + "_form";
@@ -170,6 +235,11 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                 rangeSlider()
 
 
+            })
+            //https://getbootstrap.com/docs/5.0/components/popovers/#example-enable-popovers-everywhere
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl)
             })
         });
     </script>
