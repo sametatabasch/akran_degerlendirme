@@ -206,7 +206,7 @@ def rate_project(project_id):
     db.session.commit()
 
     # Proje ortalama puanını güncelle
-    project = Project.query.get(project_id)
+    project = db.session.get(Project, int(project_id))
     project.update_rating()
 
     return jsonify({'success': True})
