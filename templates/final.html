@@ -204,7 +204,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                     if (response.success) {
                         // Başarılı işlem sonrasında yapılacaklar
                         puanVerModal.hide()
-                        project_raitings[projects[currentProjectIndex]] = ratings
+                        project_raitings[projects[currentProjectIndex]] = JSON.stringify(ratings)
                         alert(projects[currentProjectIndex] + 'Puan başarıyla verildi!');
                         console.log('Puan başarıyla verildi!');
                     } else {
@@ -243,7 +243,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                 modalTitle.textContent = project_id + ". Proje İçin Puan Ver"
                 modalFrom.id = project_id + "_form";
                 let ratings;
-                if ( typeof project_raitings[project_id] !== undefined) {
+                if (typeof project_raitings !== "undefined" && typeof project_raitings[project_id] !== "undefined") {
                     ratings = JSON.parse(project_raitings[project_id])
                 } else {
                     ratings = false
