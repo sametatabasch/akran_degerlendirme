@@ -159,8 +159,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
             var puanVerModal = new bootstrap.Modal(puanVerModalEl)
             var currentProjectIndex = 0;
             var projects = [{% for project in projects %}{{ project.id }}{% if not loop.last %}, {% endif %}{% endfor %}];
-            {#var project_raitings = {{ project_ratings }} // todo çoklu raiting#}
-            var project_raitings = [3,4,5]
+            var project_raitings = {{ project_ratings|safe}}
 
                 function showNextProject() {
                     document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
@@ -185,7 +184,6 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
             previousProjectButton.click(showPreviousProject)
 
             function rateProject() {
-                    console.log("rate")
                 let time_rating = document.getElementById(projects[currentProjectIndex] + '_time_rating').value;
                 let character_rating = document.getElementById(projects[currentProjectIndex] + '_character_rating').value;
                 let scenario_rating = document.getElementById(projects[currentProjectIndex] + '_scenario_rating').value;
@@ -244,10 +242,18 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
 
                 modalTitle.textContent = project_id + ". Proje İçin Puan Ver"
                 modalFrom.id = project_id + "_form";
+                let ratings;
+                if ( typeof project_raitings[project_id] !== undefined) {
+                    ratings = JSON.parse(project_raitings[project_id])
+                } else {
+                    ratings = false
+                }
                 modalRanges.forEach(function (range) {
                     range.id = project_id + "_" + range.title;
                     range.name = project_id + "_" + range.title;
-                    range.value = project_raitings[project_id];
+                    if (ratings) {
+                        range.value = ratings[range.title]
+                    }
                 });
                 rangeSlider()
 
