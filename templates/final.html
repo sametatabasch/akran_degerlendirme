@@ -82,7 +82,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                             </button>
                         </label>
                         <div class="range-slider">
-                            <input id="time_rating" name="time_rating" class="range-slider__range" type="range"
+                            <input id="" name="" title="time_rating" class="range-slider__range" type="range"
                                    value="" min="0" max="10">
                             <span class="range-slider__value">0</span>
                         </div>
@@ -100,13 +100,13 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                             </button>
                         </label>
                         <div class="range-slider">
-                            <input id="character_rating" name="character_rating" class="range-slider__range"
+                            <input id="" name="" title="character_rating" class="range-slider__range"
                                    type="range"
                                    value="" min="0" max="10">
                             <span class="range-slider__value">0</span>
                         </div>
-                        <label for="senario_rating">Hikaye
-                        <button
+                        <label for="scenario_rating">Hikaye
+                            <button
                                     type="button"
                                     class="btn btn-light btn-sm p-1"
                                     data-bs-container="body"
@@ -116,14 +116,15 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                                     data-bs-content="Animasyonun hikayesine verdiğiniz puandır. Animasyonun bir hikayeye sahip olması onu daha güzel hale getirir."
                             >
                                 ?
-                            </button></label>
+                            </button>
+                        </label>
                         <div class="range-slider">
-                            <input id="senario_rating" name="senario_rating" class="range-slider__range" type="range"
+                            <input id="" name="" title="scenario_rating" class="range-slider__range" type="range"
                                    value="" min="0" max="10">
                             <span class="range-slider__value">0</span>
                         </div>
                         <label for="reality_rating">Gerçeklik
-                        <button
+                            <button
                                     type="button"
                                     class="btn btn-light btn-sm p-1"
                                     data-bs-container="body"
@@ -133,9 +134,10 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                                     data-bs-content="Animasyonda bulunan karakterlerin ve nesnelerin hareketlerinin gerçek dünyadaki hareketlere benzeme oranına verdiğiniz puandır."
                             >
                                 ?
-                            </button></label>
+                            </button>
+                        </label>
                         <div class="range-slider">
-                            <input id="reality_rating" name="reality_rating" class="range-slider__range" type="range"
+                            <input id="" name="" title="reality_rating" class="range-slider__range" type="range"
                                    value="" min="0" max="10">
                             <span class="range-slider__value">0</span>
                         </div>
@@ -157,7 +159,8 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
             var puanVerModal = new bootstrap.Modal(puanVerModalEl)
             var currentProjectIndex = 0;
             var projects = [{% for project in projects %}{{ project.id }}{% if not loop.last %}, {% endif %}{% endfor %}];
-            var project_raitings = {{ project_ratings }} // todo çoklu raiting
+            {#var project_raitings = {{ project_ratings }} // todo çoklu raiting#}
+            var project_raitings = [3,4,5]
 
                 function showNextProject() {
                     document.getElementById(projects[currentProjectIndex] + '_container').style.display = 'none';
@@ -182,8 +185,18 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
             previousProjectButton.click(showPreviousProject)
 
             function rateProject() {
-                var rating = document.getElementById(projects[currentProjectIndex] + '_rating').value;
-
+                    console.log("rate")
+                let time_rating = document.getElementById(projects[currentProjectIndex] + '_time_rating').value;
+                let character_rating = document.getElementById(projects[currentProjectIndex] + '_character_rating').value;
+                let scenario_rating = document.getElementById(projects[currentProjectIndex] + '_scenario_rating').value;
+                let reality_rating = document.getElementById(projects[currentProjectIndex] + '_reality_rating').value;
+                let ratings = {
+                    "time_rating": time_rating,
+                    "character_rating": character_rating,
+                    "scenario_rating": scenario_rating,
+                    "reality_rating": reality_rating
+                }
+                let ratingsJSON = JSON.stringify(ratings);
                 // Ajax ile puan verme işlemi
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/rate_project/' + projects[currentProjectIndex], true);
@@ -193,7 +206,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                     if (response.success) {
                         // Başarılı işlem sonrasında yapılacaklar
                         puanVerModal.hide()
-                        project_raitings[projects[currentProjectIndex]] = rating
+                        project_raitings[projects[currentProjectIndex]] = ratings
                         alert(projects[currentProjectIndex] + 'Puan başarıyla verildi!');
                         console.log('Puan başarıyla verildi!');
                     } else {
@@ -202,7 +215,7 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                         alert('Puan verme işlemi başarısız!');
                     }
                 };
-                xhr.send('rating=' + rating);
+                xhr.send('ratings=' + ratingsJSON);
             }
 
             var modalSubmitButton = $('#submitModal')
@@ -226,12 +239,16 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                 // Update the modal's content.
                 var modalTitle = puanVerModalEl.querySelector('.modal-title')
                 var modalFrom = puanVerModalEl.querySelector('form')
-                var modalRange = puanVerModalEl.querySelector('form input[type="range"]');// todo birden fazla range oluşturacağım. Bunların ortalamasını puan olarak hesaplayıp proje tablosuna yazacağım diğerlerini liste yada dict olarak kaydedeceğim 
+                var modalRanges = puanVerModalEl.querySelectorAll('form input[type="range"]');
                 var modalSubmitButton = puanVerModalEl.querySelector('#submit')
 
+                modalTitle.textContent = project_id + ". Proje İçin Puan Ver"
                 modalFrom.id = project_id + "_form";
-                modalRange.id = project_id + "_rating";
-                modalRange.value = project_raitings[project_id];
+                modalRanges.forEach(function (range) {
+                    range.id = project_id + "_" + range.title;
+                    range.name = project_id + "_" + range.title;
+                    range.value = project_raitings[project_id];
+                });
                 rangeSlider()
 
 

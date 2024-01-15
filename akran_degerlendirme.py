@@ -52,7 +52,7 @@ def rate_final_projects():
         projects = Project.query.filter_by(tag="final").all()
 
         # Projelerle ilişkilendirilmiş puanları içeren bir sözlük oluştur
-        project_ratings = {rating.project_id: rating.rating for rating in student_ratings}
+        project_ratings = {rating.project_id: rating.ratings for rating in student_ratings}
 
         # Projeleri ve öğrencinin verdiği puanları template'e geçir
         return render_template('final.html', projects=projects, project_ratings=project_ratings)
@@ -192,15 +192,15 @@ def leaderboard():
 @app.route('/rate_project/<int:project_id>', methods=['POST'])
 @login_required
 def rate_project(project_id):
-    rating = int(request.form.get('rating'))
+    ratings = json.loads(request.form.get('ratings'))
 
     # Öğrencinin daha önce bu projeye puan verip vermediğini kontrol et
     existing_rating = ProjectRating.query.filter_by(student_id=current_user.id, project_id=project_id).first()
 
     if existing_rating:
-        existing_rating.rating = rating
+        existing_rating.ratings = json.dumps(ratings)
     else:
-        new_rating = ProjectRating(student_id=current_user.id, project_id=project_id, rating=rating)
+        new_rating = ProjectRating(student_id=current_user.id, project_id=project_id, ratings=json.dumps(ratings))
         db.session.add(new_rating)
 
     db.session.commit()

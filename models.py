@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+import json
 
 db = SQLAlchemy()
 
@@ -33,8 +34,21 @@ class Project(db.Model):
     ratings = db.relationship('ProjectRating', backref='project', lazy=True)
 
     def update_rating(self):
-        if self.ratings:
-            total_ratings = sum([rating.rating for rating in self.ratings])
+        """
+                Her bir projeye verilmiş alt oyların ortalamalarını alıp toplayarak projenin puanını hesaplar
+                :return:
+        """
+        ratings = self.ratings
+
+        if ratings:
+            total_ratings = 0
+            for rat in ratings:
+                ratings_values = json.loads(rat.ratings).values()
+                sum = 0
+                for r in ratings_values:
+                    sum += float(r)
+                total_ratings += sum / len(ratings_values)
+
             self.sum_rating = total_ratings
         else:
             self.sum_rating = 0.0
@@ -46,7 +60,7 @@ class ProjectRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-    rating = db.Column(db.Integer, nullable=False)
+    ratings = db.Column(db.Text, nullable=False)
 
     def update_project_rating(self):
         project = Project.query.get(self.project_id)
