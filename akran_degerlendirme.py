@@ -283,16 +283,16 @@ def project_ratings_freq():
             SELECT
               s.student_number,
               s.username,
-              COUNT(CASE WHEN pr.rating = 1 THEN 1 END) as rating_1,
-              COUNT(CASE WHEN pr.rating = 2 THEN 1 END) as rating_2,
-              COUNT(CASE WHEN pr.rating = 3 THEN 1 END) as rating_3,
-              COUNT(CASE WHEN pr.rating = 4 THEN 1 END) as rating_4,
-              COUNT(CASE WHEN pr.rating = 5 THEN 1 END) as rating_5,
-              COUNT(CASE WHEN pr.rating = 6 THEN 1 END) as rating_6,
-              COUNT(CASE WHEN pr.rating = 7 THEN 1 END) as rating_7,
-              COUNT(CASE WHEN pr.rating = 8 THEN 1 END) as rating_8,
-              COUNT(CASE WHEN pr.rating = 9 THEN 1 END) as rating_9,
-              COUNT(CASE WHEN pr.rating = 10 THEN 1 END) as rating_10
+              COUNT(CASE WHEN pr.ratings = 1 THEN 1 END) as rating_1,
+              COUNT(CASE WHEN pr.ratings = 2 THEN 1 END) as rating_2,
+              COUNT(CASE WHEN pr.ratings = 3 THEN 1 END) as rating_3,
+              COUNT(CASE WHEN pr.ratings = 4 THEN 1 END) as rating_4,
+              COUNT(CASE WHEN pr.ratings = 5 THEN 1 END) as rating_5,
+              COUNT(CASE WHEN pr.ratings = 6 THEN 1 END) as rating_6,
+              COUNT(CASE WHEN pr.ratings = 7 THEN 1 END) as rating_7,
+              COUNT(CASE WHEN pr.ratings = 8 THEN 1 END) as rating_8,
+              COUNT(CASE WHEN pr.ratings = 9 THEN 1 END) as rating_9,
+              COUNT(CASE WHEN pr.ratings = 10 THEN 1 END) as rating_10
             FROM
               project_rating pr
             INNER JOIN

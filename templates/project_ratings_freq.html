@@ -1,51 +1,66 @@
 {% extends 'layout.html' %}
 
 {% block title %}Project Ratings{% endblock %}
+{% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"/>
 
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+{% endblock %}
 {% block content %}
-    <h1>Öğrenci Puanları</h1>
-    <table id="projectRatingsTable">
-        <thead>
-            <tr>
-                <th>Öğrenci Numarası</th>
-                <th>Kullanıcı Adı</th>
-                <th>Puan 1</th>
-                <th>Puan 2</th>
-                <th>Puan 3</th>
-                <th>Puan 4</th>
-                <th>Puan 5</th>
-                <th>Puan 6</th>
-                <th>Puan 7</th>
-                <th>Puan 8</th>
-                <th>Puan 9</th>
-                <th>Puan 10</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
+    {% if current_user.is_authenticated %}
+        <div class="container">
+            <h1>Öğrenci Puanları</h1>
+            <table id="projectRatingsTable">
+                <thead>
                 <tr>
-                    <td>{{ student.student_number }}</td>
-                    <td>{{ student.username }}</td>
-                    <td class="{{ 'red' if student.rating_1 > 30 else '' }}">{{ student.rating_1 }}</td>
-                    <td class="{{ 'red' if student.rating_2 > 30 else '' }}">{{ student.rating_2 }}</td>
-                    <td class="{{ 'red' if student.rating_3 > 30 else '' }}">{{ student.rating_3 }}</td>
-                    <td class="{{ 'red' if student.rating_4 > 30 else '' }}">{{ student.rating_4 }}</td>
-                    <td class="{{ 'red' if student.rating_5 > 30 else '' }}">{{ student.rating_5 }}</td>
-                    <td class="{{ 'red' if student.rating_6 > 30 else '' }}">{{ student.rating_6 }}</td>
-                    <td class="{{ 'red' if student.rating_7 > 30 else '' }}">{{ student.rating_7 }}</td>
-                    <td class="{{ 'red' if student.rating_8 > 30 else '' }}">{{ student.rating_8 }}</td>
-                    <td class="{{ 'red' if student.rating_9 > 30 else '' }}">{{ student.rating_9 }}</td>
-                    <td class="{{ 'red' if student.rating_10 > 30 else '' }}">{{ student.rating_10 }}</td>
+                    <th>Öğrenci Numarası</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>Puan 1</th>
+                    <th>Puan 2</th>
+                    <th>Puan 3</th>
+                    <th>Puan 4</th>
+                    <th>Puan 5</th>
+                    <th>Puan 6</th>
+                    <th>Puan 7</th>
+                    <th>Puan 8</th>
+                    <th>Puan 9</th>
+                    <th>Puan 10</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+                </thead>
+                <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student.student_number }}</td>
+                        <td>{{ student.username }}</td>
+                        <td class="{{ 'red' if student.rating_1 > 30 else '' }}">{{ student.rating_1 }}</td>
+                        <td class="{{ 'red' if student.rating_2 > 30 else '' }}">{{ student.rating_2 }}</td>
+                        <td class="{{ 'red' if student.rating_3 > 30 else '' }}">{{ student.rating_3 }}</td>
+                        <td class="{{ 'red' if student.rating_4 > 30 else '' }}">{{ student.rating_4 }}</td>
+                        <td class="{{ 'red' if student.rating_5 > 30 else '' }}">{{ student.rating_5 }}</td>
+                        <td class="{{ 'red' if student.rating_6 > 30 else '' }}">{{ student.rating_6 }}</td>
+                        <td class="{{ 'red' if student.rating_7 > 30 else '' }}">{{ student.rating_7 }}</td>
+                        <td class="{{ 'red' if student.rating_8 > 30 else '' }}">{{ student.rating_8 }}</td>
+                        <td class="{{ 'red' if student.rating_9 > 30 else '' }}">{{ student.rating_9 }}</td>
+                        <td class="{{ 'red' if student.rating_10 > 30 else '' }}">{{ student.rating_10 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="container text-center">
+            <h2>Ana Sayfa</h2>
+            <p>Lütfen giriş yapın.</p>
+            <a href="{{ url_for('login') }}">Giriş Yap</a>
+        </div>
+    {% endif %}
     <script>
-        $(document).ready(function () {
-            $('#projectRatingsTable').DataTable({
-        "pageLength": 50
-    });
-        });
+
     </script>
+    {% block js %}
+        <script>
+            let table = new DataTable('#projectRatingsTable');
+        </script>
+    {% endblock %}
 {% endblock %}
