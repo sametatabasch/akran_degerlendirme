@@ -4,7 +4,8 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/range.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/buttons.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.min.css', _external=True) }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"/>
 
@@ -32,20 +33,17 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                                     src="https://www.youtube.com/embed/{{ project_data['youtube_video_id'] }}"
                                     allowfullscreen></iframe>
                         </div>
-
-
                     </div>
                 {% endfor %}
                 <div class="d-flex flex-row justify-content-center">
-                    <button id="previousProjectButton" class="button -green center"
-                    >Önceki Proje
+                    <button id="previousProjectButton" class="btn btn-success m-2">
+                        <i class="bi bi-arrow-left-circle-fill"></i> Önceki Proje
                     </button>
-                    <button class="button -blue center" data-bs-toggle="modal" data-bs-target="#puanVerModal"
-
-                    >Puan Ver
+                    <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#puanVerModal">
+                        <i class="bi bi-bar-chart"></i> Puan Ver
                     </button>
-                    <button id="nextProjectButton" class="button -green center">
-                        Sonraki Proje
+                    <button id="nextProjectButton" class="btn btn-success m-2">
+                        Sonraki Proje <i class="bi bi-arrow-right-circle-fill"></i>
                     </button>
                 </div>
 
@@ -152,7 +150,20 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
             </div>
         </div>
     </div>
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="puanVerToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
 
+                <strong class="me-auto"><i class="bi bi-info-circle-fill"></i> Başarılı</strong>
+
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Başarıyla puan verildi
+            </div>
+        </div>
+    </div>
     <script>
         $(function () {
             var puanVerModalEl = document.getElementById('puanVerModal')
@@ -205,8 +216,8 @@ todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi
                         // Başarılı işlem sonrasında yapılacaklar
                         puanVerModal.hide()
                         project_raitings[projects[currentProjectIndex]] = JSON.stringify(ratings)
-                        alert(projects[currentProjectIndex] + 'Puan başarıyla verildi!');
-                        console.log('Puan başarıyla verildi!');
+                        t = new bootstrap.Toast(document.getElementById("puanVerToast"))
+                        t.show()
                     } else {
                         // Hata durumunda yapılacaklar
                         console.error('Puan verme işlemi başarısız!');
