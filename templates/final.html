@@ -258,6 +258,8 @@
                     range.name = project_id + "_" + range.title;
                     if (ratings) {
                         range.value = ratings[range.title]
+                    }else {
+                        range.value = 0
                     }
                 });
                 rangeSlider()
