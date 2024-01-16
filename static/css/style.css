@@ -2,5 +2,5 @@ main > .container,.container-fluid {
   padding: 90px 15px 0;
 }
 .project-container {
-    height: calc(100vh - 80px);
+   /* height: calc(100vh - 80px);*/
 }
