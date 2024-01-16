@@ -18,9 +18,9 @@ class Student(UserMixin, db.Model):
 
     def get_projects_by_tag(self, tag):
         if tag == 'vize':
-            return Project.query.filter_by(student_id=self.id, tag='vize').all()
+            return Project.query.filter_by(student_id=self.id, tag='vize').first()
         elif tag == 'final':
-            return Project.query.filter_by(student_id=self.id, tag='final').all()
+            return Project.query.filter_by(student_id=self.id, tag='final').first()
         else:
             return []
 
