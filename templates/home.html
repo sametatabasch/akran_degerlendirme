@@ -6,14 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/range.css') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/buttons.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"/>
-
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 {% endblock %}
-
-<!--
-todo https://getbootstrap.com/docs/5.0/components/toasts/ puan verildi bildirimi için
--->
 
 {% block content %}
     {% if current_user.is_authenticated %}
