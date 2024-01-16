@@ -19,7 +19,7 @@
 
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
         <div class="container">
-                <a class="navbar-brand" href="{{ url_for('home') }}">GençBilişim Akran Değerlendirme</a>
+            <a class="navbar-brand" href="{{ url_for('home') }}">GençBilişim Akran Değerlendirme</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,11 +28,12 @@
                 <ul class="nav mb-2 mb-md-0 nav-pills">
                     <li class="nav-item">
                         <a href="{{ url_for('home') }}"
-                                            class="nav-link {% if request.path == '/' %}active{% endif %}"
-                                            aria-current="page">Ana
-                        Sayfa</a></li>
+                           class="nav-link {% if request.path == '/' %}active{% endif %}"
+                           aria-current="page">Ana
+                            Sayfa</a></li>
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link {% if request.path == '/profile' %}active{% endif %}" href="{{ url_for('profile') }}">Profilim</a></li>
+                        <li class="nav-item"><a class="nav-link {% if request.path == '/profile' %}active{% endif %}"
+                                                href="{{ url_for('profile') }}">Profilim</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
                     {% else %}
                         <li class="nav-item"><a id="login"
@@ -64,9 +65,10 @@
     </div>
 </footer>
 <!-- Ek script dosyaları veya CDN bağlantıları burada eklenebilir -->
+<script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% block js %}
-    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 {% endblock %}
 </body>
 </html>
