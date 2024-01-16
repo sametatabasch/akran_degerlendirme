@@ -96,18 +96,19 @@
                                     <div id="vizeCollapse" class="accordion-collapse collapse "
                                          aria-labelledby="vizeHeading" data-bs-parent="#projectAccordion">
                                         <div class="accordion-body">
-                                            {% set vize_project = current_user.projects|selectattr('tag', 'eq', 'vize')|first %}
+                                            {% set vize_project = current_user.get_projects_by_tag("vize") %}
                                             {% if vize_project %}
                                                 {% set data = vize_project.data |safe|json_decode %}
                                                 {% set image = data["image"] %}
                                                 {% set image_answer = data["image_answer"] %}
+
+                                                <div class="text-center">
+                                                    Görsel
+                                                    <img src="{{ image }}" class="rounded  img-thumbnail">
+                                                    Cevap
+                                                    <img src="{{ image_answer }}" class="rounded img-thumbnail">
+                                                </div>
                                             {% endif %}
-                                            <div class="text-center">
-                                                Görsel
-                                                <img src="{{ image }}" class="rounded  img-thumbnail">
-                                                Cevap
-                                                <img src="{{ image_answer }}" class="rounded img-thumbnail">
-                                            </div>
                                             <div class="mb-3">
                                                 {{ form.vize_project_upload_1.label(for="vize_project_upload_1", class="form-label") }}
                                                 {{ form.vize_project_upload_1(placeholder="", class="form-control", id="vize_project_upload_1") }}
@@ -140,7 +141,7 @@
                                          aria-labelledby="finalHeading" data-bs-parent="#projectAccordion">
                                         <div class="accordion-body">
                                             <div class="mb-3">
-                                                {% set final_project = current_user.projects|selectattr('tag', 'eq', 'final')|first %}
+                                                {% set final_project = current_user.get_projects_by_tag("final") %}
                                                 {% if final_project %}
                                                     {% set data = final_project.data |safe|json_decode %}
                                                     {% set final_link = "https://www.youtube.com/watch?v=" + data["youtube_video_id"] %}
