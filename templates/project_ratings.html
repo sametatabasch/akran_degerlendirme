@@ -1,29 +1,52 @@
 {% extends "layout.html" %}
 
 {% block title %}Proje Puanları{% endblock %}
+{% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"/>
 
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+{% endblock %}
 {% block content %}
-    <div>
+    {% if current_user.is_authenticated %}
+        <div class="container">
         <h2>Proje Puanları</h2>
-
         <table id="ratings">
             <thead>
             <tr>
-                <th>Proje Adı</th>
+                <th>Proje Id</th>
+                <th>Proje Sahibi Adı</th>
+                <th>Proje Sahibi Soyadı</th>
+                <th>Öğr. No</th>
                 <th>Ortalama Puan</th>
+                <th>Etiket</th>
             </tr>
             </thead>
             <tbody>
             {% for project in projects %}
                 <tr>
-                    <td>{{ project.owner_name }}</td>
-                    <td>{{ project.average_rating }}</td>
+                    <td>{{ project.id }}</td>
+                    <td>{{ project.student.first_name }}</td>
+                    <td>{{ project.student.last_name }}</td>
+                    <td>{{ project.student.student_number }}</td>
+                    <td>{{ project.sum_rating }}</td>
+                    <td>{{ project.tag }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-    </div>
-    <script>
-        let table = new DataTable('#ratings');
-    </script>
+    {% else %}
+        <div class="container text-center">
+            <h2>Ana Sayfa</h2>
+            <p>Lütfen giriş yapın.</p>
+            <a href="{{ url_for('login') }}">Giriş Yap</a>
+        </div>
+    {% endif %}
+</div>
+
+    {% block js %}
+        <script>
+            let table = new DataTable('#ratings');
+        </script>
+    {% endblock %}
 {% endblock %}
