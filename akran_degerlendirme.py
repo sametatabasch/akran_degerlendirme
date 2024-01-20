@@ -201,6 +201,10 @@ def delete_student(student_id):
         student = db.session.get(Student, student_id)
 
         if student and student.username != "sametatabasch":
+            for project in student.projects:
+                db.session.delete(project)
+            for rating in student.project_ratings:
+                db.session.delete(rating)
             db.session.delete(student)
             db.session.commit()
             return jsonify({'success': True})
