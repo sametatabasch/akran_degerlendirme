@@ -41,6 +41,11 @@ def home():
         return redirect(url_for('login'))
 
 
+'''
+Projects
+'''
+
+
 @app.route('/rate_final_projects/')
 def rate_final_projects():
     if current_user.is_authenticated:
@@ -61,36 +66,40 @@ def rate_final_projects():
         return redirect(url_for('login'))
 
 
-def compress_and_save_image(file, username):
-    try:
-        # Güvenli dosya adını oluştur
-        filename = secure_filename(file.filename)
+@app.route('/rate_project/<int:project_id>', methods=['POST'])
+@login_required
+def rate_project(project_id):
+    ratings = json.loads(request.form.get('ratings'))
 
-        # Kullanıcı adında bir dizin oluştur
-        user_folder = os.path.join(app.config['UPLOAD_FOLDER'], username)
-        os.makedirs(user_folder, exist_ok=True)
+    # Öğrencinin daha önce bu projeye puan verip vermediğini kontrol et
+    existing_rating = ProjectRating.query.filter_by(student_id=current_user.id, project_id=project_id).first()
 
-        # Resmi sıkıştır ve dosyayı kaydet
-        source = tinify.from_buffer(file.read())
-        source.to_file(os.path.join(user_folder, filename))
+    if existing_rating:
+        existing_rating.ratings = json.dumps(ratings)
+    else:
+        new_rating = ProjectRating(student_id=current_user.id, project_id=project_id, ratings=json.dumps(ratings))
+        db.session.add(new_rating)
 
-        print(f"Resim sıkıştırma başarılı. Yeni dosya: {filename}")
-        return filename
-    except tinify.AccountError as e:
-        flash(f'Hesap hatası: {e}', 'danger')
-        return False
-    except tinify.ClientError as e:
-        flash(f'Geçersiz istek hatası: {e}', 'danger')
-        return False
-    except tinify.ServerError as e:
-        flash(f'Sunucu hatası: {e}', 'danger')
-        return False
-    except tinify.ConnectionError as e:
-        flash(f'İletişim hatası: {e}', 'danger')
-        return False
-    except Exception as e:
-        flash(f'İşlem hatası: {e}', 'danger')
-        return False
+    db.session.commit()
+
+    # Proje ortalama puanını güncelle
+    project = db.session.get(Project, int(project_id))
+    project.update_rating()
+
+    return jsonify({'success': True})
+
+
+@app.route('/project_ratings')
+def project_ratings():
+    # Tüm projeleri ve puanları al
+    projects = Project.query.order_by(Project.sum_rating.desc()).all()
+
+    return render_template('project_ratings.html', projects=projects)
+
+
+'''
+Students
+'''
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -176,6 +185,12 @@ def profile():
     return render_template('profile.html', form=form)
 
 
+@app.route('/student_list')
+def student_list():
+    students = Student.query.order_by(Student.student_number).all()
+    return render_template('student_list.html', students=students)
+
+
 @app.route('/leaderboard')
 @login_required
 def leaderboard():
@@ -187,43 +202,6 @@ def leaderboard():
 
     # Projeleri ve öğrencinin verdiği puanları template'e geçir
     return render_template('leaderboard.html', projects=projects)
-
-
-@app.route('/rate_project/<int:project_id>', methods=['POST'])
-@login_required
-def rate_project(project_id):
-    ratings = json.loads(request.form.get('ratings'))
-
-    # Öğrencinin daha önce bu projeye puan verip vermediğini kontrol et
-    existing_rating = ProjectRating.query.filter_by(student_id=current_user.id, project_id=project_id).first()
-
-    if existing_rating:
-        existing_rating.ratings = json.dumps(ratings)
-    else:
-        new_rating = ProjectRating(student_id=current_user.id, project_id=project_id, ratings=json.dumps(ratings))
-        db.session.add(new_rating)
-
-    db.session.commit()
-
-    # Proje ortalama puanını güncelle
-    project = db.session.get(Project, int(project_id))
-    project.update_rating()
-
-    return jsonify({'success': True})
-
-
-@app.route('/project_ratings')
-def project_ratings():
-    # Tüm projeleri ve puanları al
-    projects = Project.query.order_by(Project.sum_rating.desc()).all()
-
-    return render_template('project_ratings.html', projects=projects)
-
-
-@app.route('/student_list')
-def student_list():
-    students = Student.query.order_by(Student.student_number).all()
-    return render_template('student_list.html', students=students)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -312,6 +290,11 @@ def logout():
     return redirect(url_for('home'))
 
 
+'''
+Template
+'''
+
+
 @app.template_filter('json_decode')
 def json_decode(value):
     """
@@ -322,6 +305,43 @@ def json_decode(value):
     :return:
     """
     return json.loads(value)
+
+
+'''
+Heplers
+'''
+
+
+def compress_and_save_image(file, username):
+    try:
+        # Güvenli dosya adını oluştur
+        filename = secure_filename(file.filename)
+
+        # Kullanıcı adında bir dizin oluştur
+        user_folder = os.path.join(app.config['UPLOAD_FOLDER'], username)
+        os.makedirs(user_folder, exist_ok=True)
+
+        # Resmi sıkıştır ve dosyayı kaydet
+        source = tinify.from_buffer(file.read())
+        source.to_file(os.path.join(user_folder, filename))
+
+        print(f"Resim sıkıştırma başarılı. Yeni dosya: {filename}")
+        return filename
+    except tinify.AccountError as e:
+        flash(f'Hesap hatası: {e}', 'danger')
+        return False
+    except tinify.ClientError as e:
+        flash(f'Geçersiz istek hatası: {e}', 'danger')
+        return False
+    except tinify.ServerError as e:
+        flash(f'Sunucu hatası: {e}', 'danger')
+        return False
+    except tinify.ConnectionError as e:
+        flash(f'İletişim hatası: {e}', 'danger')
+        return False
+    except Exception as e:
+        flash(f'İşlem hatası: {e}', 'danger')
+        return False
 
 
 if __name__ == '__main__':
