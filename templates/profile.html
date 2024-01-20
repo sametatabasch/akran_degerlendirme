@@ -27,7 +27,7 @@
                             {{ form.hidden_tag() }}
 
                             <div class="form-floating mb-3">
-                                {{ form.first_name(placeholder="", class="form-control", id="first_name",value=current_user.first_name) }}
+                                {{ form.first_name(placeholder="", class="form-control", id="first_name") }}
                                 {{ form.first_name.label(for="first_name") }}
                                 {% for error in form.first_name.errors %}
                                     <span style="color: red;">{{ error }}</span>
@@ -35,7 +35,7 @@
                             </div>
 
                             <div class="form-floating mb-3">
-                                {{ form.last_name(placeholder="", class="form-control", id="last_name", value=current_user.last_name) }}
+                                {{ form.last_name(placeholder="", class="form-control", id="last_name") }}
                                 {{ form.last_name.label(for="last_name") }}
                                 {% for error in form.last_name.errors %}
                                     <span style="color: red;">{{ error }}</span>
@@ -43,7 +43,7 @@
                             </div>
 
                             <div class="form-floating mb-3">
-                                {{ form.username(placeholder="", class="form-control", id="username", value=current_user.username) }}
+                                {{ form.username(placeholder="", class="form-control", id="username") }}
                                 {{ form.username.label(for="username") }}
                                 {% for error in form.username.errors %}
                                     <span style="color: red;">{{ error }}</span>
@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="form-floating mb-3">
-                                {{ form.email(placeholder="", class="form-control", id="email", value=current_user.email) }}
+                                {{ form.email(placeholder="", class="form-control", id="email") }}
                                 {{ form.email.label(for="email") }}
                                 {% for error in form.email.errors %}
                                     <span style="color: red;">{{ error }}</span>
@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="form-floating mb-3">
-                                {{ form.student_number(placeholder="", class="form-control", id="student_number", value=current_user.student_number) }}
+                                {{ form.student_number(placeholder="", class="form-control", id="student_number") }}
                                 {{ form.student_number.label(for="student_number") }}
                                 {% for error in form.student_number.errors %}
                                     <span style="color: red;">{{ error }}</span>
@@ -96,7 +96,7 @@
                                     <div id="vizeCollapse" class="accordion-collapse collapse "
                                          aria-labelledby="vizeHeading" data-bs-parent="#projectAccordion">
                                         <div class="accordion-body">
-                                            {% set vize_project = current_user.get_projects_by_tag("vize") %}
+                                            {% set vize_project = student.get_projects_by_tag("vize") %}
                                             {% if vize_project %}
                                                 {% set data = vize_project.data |safe|json_decode %}
                                                 {% set image = data["image"] %}
@@ -141,7 +141,7 @@
                                          aria-labelledby="finalHeading" data-bs-parent="#projectAccordion">
                                         <div class="accordion-body">
                                             <div class="mb-3">
-                                                {% set final_project = current_user.get_projects_by_tag("final") %}
+                                                {% set final_project = student.get_projects_by_tag("final") %}
                                                 {% if final_project %}
                                                     {% set data = final_project.data |safe|json_decode %}
                                                     {% set final_link = "https://www.youtube.com/watch?v=" + data["youtube_video_id"] %}

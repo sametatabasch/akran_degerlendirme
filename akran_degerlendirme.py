@@ -102,47 +102,49 @@ Students
 '''
 
 
+@app.route('/profile/<int:student_id>', methods=['GET', 'POST'])
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
-def profile():
-    form = ProfileForm()
+def profile(student_id=None):
+    student = current_user if student_id is None else Student.query.get(student_id)
+    form = ProfileForm(obj=student)  # obj ile form alanları current user verileri ile dolduruluyor.
 
     if form.validate_on_submit():
         # Formdan gelen bilgileri kullanarak öğrenci bilgilerini güncelle
-        current_user.first_name = form.first_name.data
-        current_user.last_name = form.last_name.data
-        current_user.email = form.email.data
-        current_user.student_number = form.student_number.data
+        student.first_name = form.first_name.data
+        student.last_name = form.last_name.data
+        student.email = form.email.data
+        student.student_number = form.student_number.data
 
         # Eğer yeni şifre girilmişse, şifreyi güncelle
         if form.password.data:
-            current_user.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            student.password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 
         # Eğer vize projesi dosyaları yüklenmişse, projeleri kaydet
         if form.vize_project_upload_1.data and form.vize_project_upload_2.data:
             vize_project_file_1 = form.vize_project_upload_1.data
             vize_project_file_2 = form.vize_project_upload_2.data
 
-            filename_1 = compress_and_save_image(vize_project_file_1, current_user.username)
-            filename_2 = compress_and_save_image(vize_project_file_2, current_user.username)
+            filename_1 = compress_and_save_image(vize_project_file_1, student.username)
+            filename_2 = compress_and_save_image(vize_project_file_2, student.username)
 
             if not filename_1 and not filename_2:
-                return redirect(url_for('profile'))
+                return redirect(url_for('profile' if student_id is None else 'profile/' + student_id))
             # Kontrol etmek için öğrencinin aynı tag'deki projelerini al
-            existing_project = Project.query.filter_by(student_id=current_user.id, tag='vize').first()
+            existing_project = Project.query.filter_by(student_id=student.id, tag='vize').first()
 
             if existing_project:
                 # Öğrencinin zaten aynı tag'deki bir projesi varsa, ilk projeyi güncelle
                 existing_project.data = json.dumps({
-                    'image': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_1}",
-                    'image_answer': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_2}"})
+                    'image': f"{app.config['UPLOAD_FOLDER']}/{student.username}/{filename_1}",
+                    'image_answer': f"{app.config['UPLOAD_FOLDER']}/{student.username}/{filename_2}"})
             else:
                 # Veritabanına vize projelerini kaydet
                 new_vize_project = Project(
-                    student_id=current_user.id,
+                    student_id=student.id,
                     data=json.dumps({
-                        'image': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_1}",
-                        'image_answer': f"{app.config['UPLOAD_FOLDER']}/{current_user.username}/{filename_2}"}),
+                        'image': f"{app.config['UPLOAD_FOLDER']}/{student.username}/{filename_1}",
+                        'image_answer': f"{app.config['UPLOAD_FOLDER']}/{student.username}/{filename_2}"}),
                     tag='vize'
                 )
                 db.session.add(new_vize_project)
@@ -150,7 +152,7 @@ def profile():
         # Eğer final projesi YouTube linki verilmişse, linki kaydet
         if form.final_project_youtube_link.data:
             # Kontrol etmek için öğrencinin aynı tag'deki projelerini al
-            existing_project = Project.query.filter_by(student_id=current_user.id, tag='final').first()
+            existing_project = Project.query.filter_by(student_id=student.id, tag='final').first()
             if existing_project:
                 print("proje var güncellenecek")
                 # Öğrencinin zaten aynı tag'deki bir projesi varsa, ilk projeyi güncelle
@@ -164,7 +166,7 @@ def profile():
                 video_id = helper.get_youtube_id(form.final_project_youtube_link.data)
                 print("Video id:", video_id)
                 new_final_project = Project(
-                    student_id=current_user.id,
+                    student_id=student.id,
                     data=json.dumps({
                         'youtube_video_id': video_id
                     }),
@@ -176,13 +178,13 @@ def profile():
         db.session.commit()
 
         flash('Profil başarıyla güncellendi!', 'success')
-        return redirect(url_for('profile'))
+        return redirect(url_for('profile' if student_id is None else 'profile/' + student_id))
 
     if form.errors:
         flash('Formda hatalı veri var Form hatalarını kontrol edin', 'danger')
 
     # Formun ilk defa gösterilmesi veya geçersiz bir durumda
-    return render_template('profile.html', form=form)
+    return render_template('profile.html', form=form, student=student)
 
 
 @app.route('/student_list')
@@ -196,7 +198,7 @@ def student_list():
 def delete_student(student_id):
     if current_user.username == "sametatabasch":
         # İlgili öğrenciyi veritabanından sil
-        student = Student.query.get(student_id)
+        student = db.session.get(Student, student_id)
 
         if student and student.username != "sametatabasch":
             db.session.delete(student)
