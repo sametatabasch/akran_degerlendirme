@@ -191,6 +191,23 @@ def student_list():
     return render_template('student_list.html', students=students)
 
 
+@app.route('/delete_student/<int:student_id>', methods=['DELETE'])
+@login_required
+def delete_student(student_id):
+    if current_user.username == "sametatabasch":
+        # İlgili öğrenciyi veritabanından sil
+        student = Student.query.get(student_id)
+
+        if student and student.username != "sametatabasch":
+            db.session.delete(student)
+            db.session.commit()
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Öğrenci bulunamadı'}), 404
+    else:
+        return jsonify({'success': False, 'error': 'Yetki Yok'}), 404
+
+
 @app.route('/leaderboard')
 @login_required
 def leaderboard():

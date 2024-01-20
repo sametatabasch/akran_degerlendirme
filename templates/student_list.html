@@ -21,6 +21,7 @@
                     <th>Adı</th>
                     <th>Soyadı</th>
                     <th>Numara</th>
+                    <th>İşlemler</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,9 @@
                         <td>{{ student.first_name }}</td>
                         <td>{{ student.last_name }}</td>
                         <td>{{ student.student_number }}</td>
+                        <td>
+                            <button class="btn btn-danger delete-btn" data-student-id="{{ student.id }}">Sil</button>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -45,7 +49,27 @@
     {% endif %}
     {% block js %}
         <script>
-            let table = new DataTable('#student_list');
+            $(document).ready(function () {
+                let table = $('#student_list').DataTable();
+
+                // Silme butonlarına tıklama olayı ekle
+                $('#student_list').on('click', '.delete-btn', function () {
+                    let studentId = $(this).data('student-id');
+
+                    // Ajax isteği ile öğrenciyi sil
+                    $.ajax({
+                        url: '/delete_student/' + studentId,
+                        type: 'DELETE',
+                        success: function (response) {
+                            // Başarılı yanıt alındığında tabloyu güncelle
+                            if (response.success) {
+                                alert("Kullanıcı Silindi")
+                                table.row($(this).parents('tr')).remove().draw();
+                            }
+                        }
+                    });
+                });
+            });
         </script>
     {% endblock %}
 {% endblock %}
