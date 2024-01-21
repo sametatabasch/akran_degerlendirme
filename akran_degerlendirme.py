@@ -106,13 +106,15 @@ Students
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile(student_id=None):
-    student = current_user if student_id is None else Student.query.get(student_id)
+    # Eğer student_id belirtilmişse, ilgili öğrenciyi veritabanından al
+    student = current_user if student_id is None else db.session.get(Student, student_id)
     form = ProfileForm(obj=student)  # obj ile form alanları current user verileri ile dolduruluyor.
 
     if form.validate_on_submit():
         # Formdan gelen bilgileri kullanarak öğrenci bilgilerini güncelle
         student.first_name = form.first_name.data
         student.last_name = form.last_name.data
+        student.username = form.username.data
         student.email = form.email.data
         student.student_number = form.student_number.data
 
@@ -129,7 +131,7 @@ def profile(student_id=None):
             filename_2 = compress_and_save_image(vize_project_file_2, student.username)
 
             if not filename_1 and not filename_2:
-                return redirect(url_for('profile' if student_id is None else 'profile/' + student_id))
+                return redirect(url_for('profile' if student_id is None else 'profile/' + str(student_id)))
             # Kontrol etmek için öğrencinin aynı tag'deki projelerini al
             existing_project = Project.query.filter_by(student_id=student.id, tag='vize').first()
 
@@ -178,7 +180,7 @@ def profile(student_id=None):
         db.session.commit()
 
         flash('Profil başarıyla güncellendi!', 'success')
-        return redirect(url_for('profile' if student_id is None else 'profile/' + student_id))
+        return redirect(url_for('profile', student_id=student_id))
 
     if form.errors:
         flash('Formda hatalı veri var Form hatalarını kontrol edin', 'danger')
