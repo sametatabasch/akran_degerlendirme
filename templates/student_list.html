@@ -34,6 +34,7 @@
                         <td>{{ student.student_number }}</td>
                         <td>
                             <button class="btn btn-danger delete-btn" data-student-id="{{ student.id }}">Sil</button>
+                            <a href="{{ url_for('profile',student_id = student.id) }}" class="btn btn-primary edit-btn">Düzenle</a>
                         </td>
                     </tr>
                 {% endfor %}
