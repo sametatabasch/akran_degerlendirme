@@ -54,7 +54,6 @@ class ProfileForm(FlaskForm):
     submit = SubmitField('Kaydet')
 
     def validate(self, extra_validators=None):
-        print("Validate Çalıştı")
         rv = FlaskForm.validate(self)
         if not rv:
             return False
@@ -87,7 +86,7 @@ class ProfileForm(FlaskForm):
         err = list(self.email.errors)
         student = Student.query.get(self.id.data)
         other_student = Student.query.filter_by(email=self.email.data).first()
-        if student.id != other_student.id:
+        if other_student and student.id != other_student.id:
             err.append('Bu email zaten alınmış. Lütfen başka bir email seçin.')
             self.email.errors = tuple(err)
             result = False
@@ -98,7 +97,7 @@ class ProfileForm(FlaskForm):
         err = list(self.student_number.errors)
         student = Student.query.get(self.id.data)
         other_student = Student.query.filter_by(student_number=self.student_number.data).first()
-        if student.id != other_student.id:
+        if other_student and student.id != other_student.id:
             err.append('Bu öğrenci numarası zaten alınmış. Lütfen başka bir öğrenci numarası seçin.')
             self.student_number.errors = tuple(err)
             result = False
