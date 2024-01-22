@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block title %}Project Ratings{% endblock %}
+{% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"/>
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+{% endblock %}
+{% block content %}
+    {% if current_user.is_authenticated %}
+        <div class="container-fluid">
+            <h1>Öğrenci Puanları</h1>
+            <table id="projectRatingsTable">
+                <thead>
+                <tr>
+                    <th>Öğrenci Numarası</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>Puanlar</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student.student_number }}</td>
+                        <td>{{ student.username }}</td>
+                        <td class="d-flex flex-row">
+                            {% for rating in student.project_ratings %}
+                                <div class="d-flex flex-column m-0 text-center p-1">
+                                    <span class="border-bottom">{{ rating.project_id }}</span>
+                                    <p>
+                                        {{ students_project_ratings[student.id][rating.project_id] }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="container text-center">
+            <h2>Ana Sayfa</h2>
+            <p>Lütfen giriş yapın.</p>
+            <a href="{{ url_for('login') }}">Giriş Yap</a>
+        </div>
+    {% endif %}
+    <script>
+
+    </script>
+    {% block js %}
+        <script>
+            let table = new DataTable('#projectRatingsTable');
+        </script>
+    {% endblock %}
+{% endblock %}

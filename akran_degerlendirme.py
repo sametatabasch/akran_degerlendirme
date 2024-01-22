@@ -216,6 +216,29 @@ def delete_student(student_id):
         return jsonify({'success': False, 'error': 'Yetki Yok'}), 404
 
 
+@app.route('/student_ratings')
+@login_required
+def student_ratings():
+    students = Student.query.all()
+    students_project_ratings = {}
+    for student in students:
+        ratings = student.project_ratings
+
+        if ratings:
+            pr = {}
+            for rat in ratings:
+                ratings_values = json.loads(rat.ratings).values()
+                sum = 0
+                for r in ratings_values:
+                    sum += float(r)
+                total_ratings = sum / 4
+
+                pr[rat.project_id] = total_ratings
+                students_project_ratings[student.id] = pr
+
+    return render_template('student_ratings.html', students=students, students_project_ratings=students_project_ratings)
+
+
 @app.route('/leaderboard')
 @login_required
 def leaderboard():
