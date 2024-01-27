@@ -239,8 +239,9 @@ def student_ratings():
             pr_sorted = OrderedDict(sorted(pr.items(), key=lambda x: x[0]))
 
             students_project_ratings[student.id] = pr_sorted
-
-    return render_template('student_ratings.html', students=students, students_project_ratings=students_project_ratings)
+    projects_count = Project.query.count()
+    return render_template('student_ratings.html', students=students, students_project_ratings=students_project_ratings,
+                           projects_count=projects_count)
 
 
 @app.route('/leaderboard')

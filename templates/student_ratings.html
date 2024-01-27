@@ -25,14 +25,19 @@
                         <td>{{ student.student_number }}</td>
                         <td>{{ student.username }}</td>
                         <td class="d-flex flex-row">
-                            {% for rating in student.project_ratings %}
-                                <div class="d-flex flex-column m-0 text-center p-1">
-                                    <span class="border-bottom">{{ rating.project_id }}</span>
+                            {% for r in range(1,projects_count+1) %}
+                                <div class="d-flex flex-column m-0 text-center p-1 p-rating">
+                                    <span class="border-bottom">{{ r }}</span>
                                     <p>
-                                        {{ students_project_ratings[student.id][rating.project_id] }}
+                                        {% if student.id in students_project_ratings and r in students_project_ratings[student.id] %}
+                                            {{ students_project_ratings[student.id][r] }}
+                                        {% else %}
+                                            X
+                                        {% endif %}
                                     </p>
                                 </div>
                             {% endfor %}
+
                         </td>
                     </tr>
                 {% endfor %}

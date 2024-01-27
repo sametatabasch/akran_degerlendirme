@@ -4,3 +4,6 @@ main > .container,.container-fluid {
 .project-container {
    /* height: calc(100vh - 80px);*/
 }
+.p-rating{
+  width: 35px;
+}
