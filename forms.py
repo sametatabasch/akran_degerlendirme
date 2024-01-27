@@ -74,12 +74,11 @@ class ProfileForm(FlaskForm):
         err = list(self.password.errors)
         if self.password.data:
             # Eğer şifre alanı doluysa ve değişmişse kontrol yap
-            if self.password.data:
-                # Length(min=6) validasyonu
-                if len(self.password.data) < 6:
-                    err.append("'Şifre en az 6 karakter olmalıdır.'")
-            self.password.errors = tuple(err)
-            result = False
+            # Length(min=6) validasyonu
+            if len(self.password.data) < 6:
+                err.append("'Şifre en az 6 karakter olmalıdır.'")
+                self.password.errors = tuple(err)
+                result = False
         #
         # Validate email
         #
@@ -111,4 +110,5 @@ class ProfileForm(FlaskForm):
                 err.append('Geçerli bir YouTube URL girin.')
                 self.final_project_youtube_link.errors = tuple(err)
                 result = False
+
         return result
