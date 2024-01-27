@@ -220,7 +220,6 @@ def delete_student(student_id):
 
 
 @app.route('/student_ratings')
-@login_required
 def student_ratings():
     students = Student.query.all()
     students_project_ratings = {}
