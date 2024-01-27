@@ -10,6 +10,7 @@ from tinify import tinify
 from werkzeug.utils import secure_filename
 import os
 import helper
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -17,6 +18,7 @@ app.config.from_pyfile('config.py')
 tinify.key = app.config['TINIFY_KEY']
 
 db.init_app(app)
+migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -203,10 +205,6 @@ def delete_student(student_id):
         student = db.session.get(Student, student_id)
 
         if student and student.username != "sametatabasch":
-            for project in student.projects:
-                db.session.delete(project)
-            for rating in student.project_ratings:
-                db.session.delete(rating)
             db.session.delete(student)
             db.session.commit()
             return jsonify({'success': True})

@@ -13,8 +13,8 @@ class Student(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     student_number = db.Column(db.String(9), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    projects = db.relationship('Project', backref='student', lazy=True)
-    project_ratings = db.relationship('ProjectRating', backref='student', lazy=True)
+    projects = db.relationship('Project', backref='student', lazy=True, cascade='all, delete-orphan')
+    project_ratings = db.relationship('ProjectRating', backref='student', lazy=True, cascade='all, delete-orphan')
 
     def get_projects_by_tag(self, tag):
         if tag == 'vize':
@@ -31,7 +31,7 @@ class Project(db.Model):
     sum_rating = db.Column(db.Float, default=0.0)
     data = db.Column(db.Text, nullable=False)
     tag = db.Column(db.String(10), nullable=False)
-    ratings = db.relationship('ProjectRating', backref='project', lazy=True)
+    ratings = db.relationship('ProjectRating', backref='project', lazy=True, cascade='all, delete-orphan')
 
     def update_rating(self):
         """
