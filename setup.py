@@ -17,7 +17,7 @@ setup(
         'flask_sqlalchemy',
         'flask_wtf',
         'email_validator',
-        'tinify,',
+        'tinify',
         'Flask-Migrate'
     ],
     entry_points={
