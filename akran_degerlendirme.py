@@ -177,7 +177,11 @@ def profile(student_id=None):
                     tag='final'
                 )
                 db.session.add(new_final_project)
-
+        else:  # link yoksa
+            # link yoksa ve öğrencinin bir projesi varsa proje silinecek
+            existing_project = Project.query.filter_by(student_id=student.id, tag='final').first()
+            if existing_project:
+                db.session.delete(existing_project)
         # Veritabanına yapılan değişiklikleri kaydet
         db.session.commit()
 
