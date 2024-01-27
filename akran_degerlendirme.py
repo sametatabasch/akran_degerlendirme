@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_bcrypt import Bcrypt
@@ -230,13 +231,14 @@ def student_ratings():
             pr = {}
             for rat in ratings:
                 ratings_values = json.loads(rat.ratings).values()
-                sum = 0
-                for r in ratings_values:
-                    sum += float(r)
-                total_ratings = sum / 4
+                total_ratings = sum(float(r) for r in ratings_values) / 4
 
                 pr[rat.project_id] = total_ratings
-                students_project_ratings[student.id] = pr
+
+            # Sıralı bir OrderedDict oluşturarak pr sözlüğünü sırala
+            pr_sorted = OrderedDict(sorted(pr.items(), key=lambda x: x[0]))
+
+            students_project_ratings[student.id] = pr_sorted
 
     return render_template('student_ratings.html', students=students, students_project_ratings=students_project_ratings)
 

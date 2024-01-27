@@ -14,7 +14,7 @@ class Student(UserMixin, db.Model):
     student_number = db.Column(db.String(9), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     projects = db.relationship('Project', backref='student', lazy=True, cascade='all, delete-orphan')
-    project_ratings = db.relationship('ProjectRating', backref='student', lazy=True, cascade='all, delete-orphan')
+    project_ratings = db.relationship('ProjectRating', backref='student', lazy=True, cascade='all, delete-orphan', order_by='ProjectRating.project_id')
 
     def get_projects_by_tag(self, tag):
         if tag == 'vize':
